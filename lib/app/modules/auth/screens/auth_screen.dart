@@ -55,30 +55,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       )
                       : LayoutBuilder(
                         builder: (context, constraints) {
-                          if (MediaQuery.of(context).orientation ==
-                              Orientation.landscape) {
-                            return AuthContent(
-                              size: size,
-                              emailController: emailController,
-                              passwordController: passwordController,
-                              state: state,
-                            );
-                          }
-                          if (constraints.maxWidth < 600) {
-                            return AuthContent(
-                              size: size,
-                              emailController: emailController,
-                              passwordController: passwordController,
-                              state: state,
-                            );
-                          } else {
-                            return AuthContentTablet(
-                              size: size,
-                              emailController: emailController,
-                              passwordController: passwordController,
-                              state: state,
-                            );
-                          }
+                          return AuthContent(
+                            size: size,
+                            emailController: emailController,
+                            passwordController: passwordController,
+                            state: state,
+                          );
                         },
                       ),
             ),
@@ -123,13 +105,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (state is AuthFailure) {
       if (state.data.error!.meta.message ==
-          'Pending activation: Password not yet created') {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const SignUpPasswordScreen()),
-          (route) => true,
-        );
-      } else if (state.data.error!.meta.message ==
           "Pending activation: Please verify using OTP") {
         Navigator.pushAndRemoveUntil(
           context,

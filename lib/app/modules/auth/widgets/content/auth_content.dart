@@ -66,19 +66,17 @@ class _AuthContentState extends State<AuthContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/images/img_text_logo.png", width: 200),
+                  Text(
+                    "Sign In",
+                    style: FontFamilyConstant.primaryFont.copyWith(
+                      color: ColorConstant.blackColor3,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
-              Text(
-                "Masuk",
-                style: FontFamilyConstant.primaryFont.copyWith(
-                  color: ColorConstant.blackColor3,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24,
-                ),
-              ),
-              const SizedBox(height: 16),
               Text(
                 "Email",
                 textAlign: TextAlign.left,

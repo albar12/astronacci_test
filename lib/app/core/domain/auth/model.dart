@@ -1,5 +1,13 @@
 import '/path.dart';
 
+class ResponseMsg {
+  final String message;
+  ResponseMsg({required this.message});
+  factory ResponseMsg.fromJson(Map<String, dynamic> json) {
+    return ResponseMsg(message: json['message']);
+  }
+}
+
 class Auth {
   final int? id;
   final int? id_number;
@@ -168,11 +176,7 @@ class AuthGoogle {
   String name;
   String email;
 
-  AuthGoogle({
-    required this.tokenId,
-    required this.name,
-    required this.email,
-  });
+  AuthGoogle({required this.tokenId, required this.name, required this.email});
 
   factory AuthGoogle.fromJson(Map<String, dynamic> json) {
     return AuthGoogle(
@@ -182,11 +186,7 @@ class AuthGoogle {
     );
   }
   static AuthGoogle empty() {
-    return AuthGoogle(
-      tokenId: '',
-      name: '',
-      email: '',
-    );
+    return AuthGoogle(tokenId: '', name: '', email: '');
   }
 
   @override
@@ -255,37 +255,28 @@ class BundlesModelWithMeta {
   final List<BundlesModel>? data;
   final List<PremiumBookModel>? books;
   Meta meta;
-  BundlesModelWithMeta({
-    this.data,
-    this.books,
-    required this.meta,
-  });
+  BundlesModelWithMeta({this.data, this.books, required this.meta});
 
   factory BundlesModelWithMeta.fromJson(Map<String, dynamic> json) {
     return BundlesModelWithMeta(
-      data: json['data']['bundles'] is List<dynamic>
-          ? List<BundlesModel>.from(
-              json['data']['bundles'].map(
-                (x) => BundlesModel.fromJson(x),
-              ),
-            )
-          : [],
-      books: json['data']['books'] is List<dynamic>
-          ? List<PremiumBookModel>.from(
-              json['data']['books'].map(
-                (x) => PremiumBookModel.fromJson(x),
-              ),
-            )
-          : [],
+      data:
+          json['data']['bundles'] is List<dynamic>
+              ? List<BundlesModel>.from(
+                json['data']['bundles'].map((x) => BundlesModel.fromJson(x)),
+              )
+              : [],
+      books:
+          json['data']['books'] is List<dynamic>
+              ? List<PremiumBookModel>.from(
+                json['data']['books'].map((x) => PremiumBookModel.fromJson(x)),
+              )
+              : [],
       meta: Meta.fromJson(json['meta']),
     );
   }
 
   factory BundlesModelWithMeta.empty() {
-    return BundlesModelWithMeta(
-      data: [],
-      meta: Meta.empty(),
-    );
+    return BundlesModelWithMeta(data: [], meta: Meta.empty());
   }
 }
 
@@ -336,7 +327,10 @@ class BundlesModel {
       duration_time: json['duration_time'],
       created_at: json['created_at'],
       updated_at: json['updated_at'],
-      premiumBundle: json['PremiumBundle'] is Map<String, dynamic> ? PremiumBundleMember.fromJson(json['PremiumBundle']) : null,
+      premiumBundle:
+          json['PremiumBundle'] is Map<String, dynamic>
+              ? PremiumBundleMember.fromJson(json['PremiumBundle'])
+              : null,
       status: json['status'],
     );
   }
@@ -444,7 +438,10 @@ class PremiumBookModel {
       duration_time: json['duration_time'],
       created_at: json['created_at'],
       updated_at: json['updated_at'],
-      bookDigital: json['BookDigital'] is Map<String, dynamic> ? PremiumBookMember.fromJson(json['BookDigital']) : null,
+      bookDigital:
+          json['BookDigital'] is Map<String, dynamic>
+              ? PremiumBookMember.fromJson(json['BookDigital'])
+              : null,
       status: json['status'],
       bundle_flag: json['bundle_flag'],
     );
@@ -500,13 +497,9 @@ class PremiumBookMember {
 
 class ForgotPasswordModel {
   String email;
-  ForgotPasswordModel({
-    required this.email,
-  });
+  ForgotPasswordModel({required this.email});
 
   factory ForgotPasswordModel.fromJson(Map<String, dynamic> json) {
-    return ForgotPasswordModel(
-      email: json['email'],
-    );
+    return ForgotPasswordModel(email: json['email']);
   }
 }

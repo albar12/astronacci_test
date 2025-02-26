@@ -3,64 +3,44 @@ part of 'sign_up_cubit.dart';
 class SignUpStateData extends Equatable {
   final bool isLoading;
   final bool isLoaded;
-  final bool updateSuccess;
-  final bool initialRegister;
-  final bool createPasswordSuccess;
-  final SignUpModel? signUpModel;
-  final AuthGoogle? authGoogle;
+  final bool registerSucces;
   final RegisterRequestDto? registerRequestDto;
-  final InitialRegisterModel? initialRegisterModel;
+  final ResponseMsg? responseMsg;
   final BaseResponseFailure? error;
 
   const SignUpStateData({
     this.isLoading = false,
     this.isLoaded = false,
-    this.updateSuccess = false,
-    this.initialRegister = false,
-    this.createPasswordSuccess = false,
-    this.signUpModel,
-    this.authGoogle,
+    this.registerSucces = false,
     this.registerRequestDto,
-    this.initialRegisterModel,
+    this.responseMsg,
     this.error,
   });
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isLoaded,
-        updateSuccess,
-        initialRegister,
-        createPasswordSuccess,
-        signUpModel,
-        authGoogle,
-        registerRequestDto,
-        initialRegisterModel,
-        error,
-      ];
+    isLoading,
+    isLoaded,
+    registerSucces,
+    registerRequestDto,
+    responseMsg,
+    error,
+  ];
 
   SignUpStateData copyWith({
     bool? isLoading,
     bool? isLoaded,
-    bool? updateSuccess,
-    bool? initialRegister,
-    bool? createPasswordSuccess,
-    SignUpModel? signUpModel,
-    AuthGoogle? authGoogle,
+    bool? registerSucces,
     RegisterRequestDto? registerRequestDto,
-    InitialRegisterModel? initialRegisterModel,
+    ResponseMsg? responseMsg,
     BaseResponseFailure? error,
   }) {
     return SignUpStateData(
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
-      updateSuccess: updateSuccess ?? this.updateSuccess,
-      initialRegister: initialRegister ?? this.initialRegister,
-      createPasswordSuccess: createPasswordSuccess ?? this.createPasswordSuccess,
-      signUpModel: signUpModel ?? this.signUpModel,
-      authGoogle: authGoogle ?? this.authGoogle,
+      registerSucces: registerSucces ?? this.registerSucces,
       registerRequestDto: registerRequestDto ?? this.registerRequestDto,
-      initialRegisterModel: initialRegisterModel ?? this.initialRegisterModel,
+      responseMsg: responseMsg ?? this.responseMsg,
       error: error ?? error,
     );
   }

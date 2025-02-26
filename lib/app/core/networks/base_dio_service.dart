@@ -54,8 +54,6 @@ class BaseDioService {
     // with meta for from json list
     bool wihtMetaList = true,
   }) async {
-    /// get verison app using [PackageInfo.fromPlatform()]
-    var versionApp = await PackageInfo.fromPlatform();
     try {
       // asynchronously get response
       var response = await responseMethod;
@@ -112,38 +110,20 @@ class BaseDioService {
       }
 
       // jika error tidak di ketahui maka akan mengembalikan error 500
-      return e.response!.data['data'] == null
-          ? Left(
-            fromJsonError({
-              "meta": {
-                "message":
-                    e.response!.data['meta']['message'] ??
-                    'Terjadi Kesalahan Silahkan Coba lagi dan Hubungi CS',
-                "status": e.response!.data['meta']['status'] ?? 500,
-              },
-            }),
-          )
-          : Left(
-            fromJsonError({
-              "meta": {
-                "message":
-                    e.response!.data['meta']['message'] ??
-                    'Terjadi Kesalahan Silahkan Coba lagi dan Hubungi CS',
-                "status": e.response!.data['meta']['status'] ?? 500,
-                "email": e.response!.data['data']['email'],
-              },
-            }),
-          );
+      return Left(
+        fromJsonError({
+          "meta": {
+            "message": e.response!.data['message'] ?? 'Terjadi Kesalahan',
+            "status": e.response!.statusCode ?? 500,
+          },
+        }),
+      );
     } catch (e) {
       customErrorLog("error catch: $e");
       // error catch hanya berlaku jika block try gagal dijalankan
       return Left(
         fromJsonError({
-          "meta": {
-            "message":
-                '[002] Terjadi Kesalahan Silahkan Coba lagi dan Hubungi CS',
-            "status": 500,
-          },
+          "meta": {"message": 'Terjadi Kesalahan', "status": 500},
         }),
       );
     }

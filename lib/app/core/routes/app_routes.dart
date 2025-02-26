@@ -12,8 +12,8 @@ class AppRoutes {
   /// (context) => const LoginScreen() = ini merupakan function login dari dalam class [LoginScreen]
   /// --
   static Map<String, Widget Function(BuildContext)> routes = {
-    RouteKeys.splash: (context) => const SplashScreen(),
-    RouteKeys.root: (context) => const RootScreen(),
+    // RouteKeys.splash: (context) => const SplashScreen(),
+    RouteKeys.splash: (context) => const AuthScreen(),
     RouteKeys.home: (context) => const HomeScreen(),
     RouteKeys.profile: (context) => const ProfileScreen(),
     RouteKeys.auth: (context) => const AuthScreen(),

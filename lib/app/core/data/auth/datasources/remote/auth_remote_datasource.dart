@@ -85,17 +85,14 @@ class AuthRemoteDatasource extends BaseDioService {
     );
   }
 
-  Future<Either<BaseResponseFailure, InitialRegisterModel>> authRegister(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
     RegisterRequestDto request,
   ) async {
-    return await baseFunction<BaseResponseFailure, InitialRegisterModel>(
-      fromJson: (data) => InitialRegisterModel.fromJson(data),
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
       fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(
-        '${EndpointAPIV1.auth}/register/${AppConfig.brand}/initial',
-        data: request.toMap(),
-      ),
-      keyData: ['data'],
+      responseMethod: dio.post(EndpointAPIV1.register, data: request.toMap()),
+      keyData: ['message'],
       customLog:
           "Dari bagian auth register \n request menyeluruh : ${request.toString()}",
     );

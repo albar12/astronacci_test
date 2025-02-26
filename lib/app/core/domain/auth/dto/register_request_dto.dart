@@ -2,11 +2,15 @@ class RegisterRequestDto {
   String name;
   String email;
   String? phone;
+  String? password;
+  String? passwordConfirm;
 
   RegisterRequestDto({
     required this.name,
     required this.email,
     this.phone,
+    required this.password,
+    required this.passwordConfirm,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,11 +18,13 @@ class RegisterRequestDto {
       'name': name,
       'email': email,
       'phone': phone,
+      'password': password,
+      'password_confirmation': passwordConfirm,
     };
   }
 
   @override
   String toString() {
-    return 'Register Request DTO (name: $name, email: $email, phone: $phone,)';
+    return 'Register Request DTO (name: $name, email: $email, phone: $phone,password: $password,password_confirmation: $passwordConfirm,)';
   }
 }

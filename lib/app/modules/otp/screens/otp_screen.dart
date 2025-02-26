@@ -135,16 +135,16 @@ class _OtpScreenState extends State<OtpScreen> {
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           snackbarSuccess(message: 'Berhasil aktivasi Akun', context: context);
         } else {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => SignUpPasswordScreen(
-                    initialRegisterModel: widget.initialRegisterModel,
-                  ),
-            ),
-            (route) => true,
-          );
+          // Navigator.pushAndRemoveUntil(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder:
+          //         (context) => SignUpPasswordScreen(
+          //           initialRegisterModel: widget.initialRegisterModel,
+          //         ),
+          //   ),
+          //   (route) => true,
+          // );
         }
       }
 

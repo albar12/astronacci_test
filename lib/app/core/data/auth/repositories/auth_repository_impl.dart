@@ -125,21 +125,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<BaseResponseFailure, InitialRegisterModel>> authRegister(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
     RegisterRequestDto request,
   ) async {
     try {
       var response = await authRemoteDatasource.authRegister(request);
-      if (response.isRight()) {
-        var token = response.getOrElse(() {
-          customErrorLog("Error get token from activation code : $response");
-          throw Exception("Error get token");
-        });
-        if (token.token != null && token.token != '') {
-          await authLocalDatasource.saveToken(token.token!);
-          await authLocalDatasource.saveRefreshToken(token.refreshToken!);
-        }
-      }
       return response;
     } catch (e) {
       customErrorLog("error catch: $e");

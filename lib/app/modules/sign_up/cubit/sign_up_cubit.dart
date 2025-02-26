@@ -24,53 +24,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          initialRegisterModel: right,
-          registerRequestDto: dto,
-          initialRegister: true,
-        );
-        emit(SignUpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> createPassword(PasswordRequestDto dto) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(SignUpLoading(stateData));
-
-    final result = await authRepository.createPassword(dto);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(SignUpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          signUpModel: right,
-          initialRegister: false,
-          createPasswordSuccess: true,
-        );
-        emit(SignUpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> registerUpdate(RegisterUpdateDto dto) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(SignUpLoading(stateData));
-
-    final result = await authRepository.authRegisterUpdate(dto);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(SignUpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          signUpModel: right,
+          responseMsg: right,
         );
         emit(SignUpLoaded(stateData));
       },

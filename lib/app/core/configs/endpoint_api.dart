@@ -16,4 +16,6 @@ class EndpointAPIV1 {
   static const String auth = '/auth';
   static const String premiumBandle = '/premium-bundle';
   static const String bookmark = '/bookmark';
+
+  static const String register = '/register';
 }

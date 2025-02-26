@@ -10,12 +10,16 @@ class SignUpContent extends StatefulWidget {
     required this.emailController,
     required this.nameController,
     required this.phoneController,
+    required this.passwordController,
+    required this.confirmationPasswordController,
   });
 
   final Size size;
   final TextEditingController emailController;
   final TextEditingController nameController;
   final TextEditingController phoneController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmationPasswordController;
 
   @override
   State<SignUpContent> createState() => _SignUpContentState();
@@ -38,13 +42,8 @@ class _SignUpContentState extends State<SignUpContent> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 16,
-        ),
-        child: Center(
-          child: _contentInput(context),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Center(child: _contentInput(context)),
       ),
     );
   }
@@ -65,10 +64,7 @@ class _SignUpContentState extends State<SignUpContent> {
       ),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -76,9 +72,13 @@ class _SignUpContentState extends State<SignUpContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/images/img_text_logo.png",
-                    width: 200,
+                  Text(
+                    "Sign Up",
+                    style: FontFamilyConstant.primaryFont.copyWith(
+                      color: ColorConstant.blackColor3,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                    ),
                   ),
                 ],
               ),
@@ -109,7 +109,7 @@ class _SignUpContentState extends State<SignUpContent> {
                         color: ColorConstant.primaryColor,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -131,10 +131,7 @@ class _SignUpContentState extends State<SignUpContent> {
                 ],
               ),
               const SizedBox(height: 16),
-              _headerInputField(
-                "Nama Lengkap",
-                isMandatory: true,
-              ),
+              _headerInputField("Nama Lengkap", isMandatory: true),
               const SizedBox(height: 8),
               CustomTextFormField(
                 controller: widget.nameController,
@@ -148,10 +145,7 @@ class _SignUpContentState extends State<SignUpContent> {
                 ),
               ),
               const SizedBox(height: 16),
-              _headerInputField(
-                "Email",
-                isMandatory: true,
-              ),
+              _headerInputField("Email", isMandatory: true),
               const SizedBox(height: 8),
               CustomTextFormField(
                 controller: widget.emailController,
@@ -165,9 +159,7 @@ class _SignUpContentState extends State<SignUpContent> {
                 ),
               ),
               const SizedBox(height: 16),
-              _headerInputField(
-                "No. WhatsApp",
-              ),
+              _headerInputField("No. WhatsApp"),
               const SizedBox(height: 8),
               CustomTextFormField(
                 controller: widget.phoneController,
@@ -181,6 +173,71 @@ class _SignUpContentState extends State<SignUpContent> {
                 ),
               ),
               const SizedBox(height: 16),
+              _headerInputField("Password", isMandatory: true),
+              const SizedBox(height: 8),
+              CustomTextFormField(
+                obscureText: obscureText,
+                controller: widget.passwordController,
+                hint: "Masukan password",
+                cursorColor: ColorConstant.blueColor,
+                keyboardType: TextInputType.text,
+                hintStyle: FontFamilyConstant.primaryFont.copyWith(
+                  color: ColorConstant.greyColor15,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    if (obscureText) {
+                      setState(() {
+                        obscureText = false;
+                      });
+                    } else {
+                      setState(() {
+                        obscureText = true;
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    obscureText == false
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              _headerInputField("Konfirmasi Password", isMandatory: true),
+              const SizedBox(height: 8),
+              CustomTextFormField(
+                obscureText: obscureCP,
+                controller: widget.confirmationPasswordController,
+                hint: "Masukan konfirmasi password",
+                cursorColor: ColorConstant.blueColor,
+                keyboardType: TextInputType.text,
+                hintStyle: FontFamilyConstant.primaryFont.copyWith(
+                  color: ColorConstant.greyColor15,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    if (obscureCP) {
+                      setState(() {
+                        obscureCP = false;
+                      });
+                    } else {
+                      setState(() {
+                        obscureCP = true;
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    obscureCP == false
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -225,11 +282,17 @@ class _SignUpContentState extends State<SignUpContent> {
                           ),
                         ),
                         onPressed: () async {
-                          final bool emailValid =
-                              RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                  .hasMatch(widget.emailController.text);
+                          final bool emailValid = RegExp(
+                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+                          ).hasMatch(widget.emailController.text);
 
-                          if (widget.nameController.text.isEmpty || widget.emailController.text.isEmpty) {
+                          if (widget.nameController.text.isEmpty ||
+                              widget.emailController.text.isEmpty ||
+                              widget.passwordController.text.isEmpty ||
+                              widget
+                                  .confirmationPasswordController
+                                  .text
+                                  .isEmpty) {
                             snackbarError(
                               title: 'Perhatian',
                               message: 'Mohon isi semua data wajib',
@@ -238,7 +301,8 @@ class _SignUpContentState extends State<SignUpContent> {
                           } else if (widget.nameController.text.length > 50) {
                             snackbarError(
                               title: 'Perhatian',
-                              message: 'Nama tidak boleh melebihi dari 50 huruf',
+                              message:
+                                  'Nama tidak boleh melebihi dari 50 huruf',
                               context: context,
                             );
                           } else if (!emailValid) {
@@ -262,73 +326,6 @@ class _SignUpContentState extends State<SignUpContent> {
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 4.0, // Ruang antar kata
-                children: [
-                  Text(
-                    "Dengan mendaftar, Anda menyetujui",
-                    style: FontFamilyConstant.primaryFont.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                  InkWell(
-                    child: Text(
-                      "Kebijakan Privasi",
-                      style: FontFamilyConstant.primaryFont.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: ColorConstant.orangeColor2,
-                        fontSize: 14,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WebviewScreen(
-                            title: "Kebijakan Privasi",
-                            link: AppConfig.appName,
-                            fromSignUp: true,
-                          ),
-                        ),
-                        (route) => true,
-                      );
-                    },
-                  ),
-                  Text(
-                    "Serta",
-                    style: FontFamilyConstant.primaryFont.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                  InkWell(
-                    child: Text(
-                      "Syarat dan Ketentuan",
-                      style: FontFamilyConstant.primaryFont.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: ColorConstant.orangeColor2,
-                        fontSize: 14,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WebviewScreen(
-                            title: "Syarat dan Ketentuan",
-                            link: AppConfig.IosBundleId,
-                            fromSignUp: true,
-                          ),
-                        ),
-                        (route) => true,
-                      );
-                    },
-                  ),
-                ],
-              ),
               const SizedBox(height: 16),
             ],
           ),
@@ -337,10 +334,7 @@ class _SignUpContentState extends State<SignUpContent> {
     );
   }
 
-  Widget _headerInputField(
-    String label, {
-    bool isMandatory = false,
-  }) {
+  Widget _headerInputField(String label, {bool isMandatory = false}) {
     return Row(
       children: [
         Text(
@@ -367,78 +361,81 @@ class _SignUpContentState extends State<SignUpContent> {
   Future<dynamic> _backDialog(BuildContext context) async {
     return showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Column(
-          children: [
-            Icon(
-              Icons.warning,
-              color: ColorConstant.yellowColor,
-              size: 50,
+      builder:
+          (context) => AlertDialog(
+            title: Column(
+              children: [
+                Icon(Icons.warning, color: ColorConstant.yellowColor, size: 50),
+                Text(
+                  "Konfirmasi Data",
+                  textAlign: TextAlign.center,
+                  style: FontFamilyConstant.primaryFont.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "Konfirmasi Data",
+            content: Text(
+              'Apakah data yang Anda isi sudah benar?',
               textAlign: TextAlign.center,
               style: FontFamilyConstant.primaryFont.copyWith(
                 fontWeight: FontWeight.w500,
-                fontSize: 14,
+                fontSize: 12,
               ),
             ),
-          ],
-        ),
-        content: Text(
-          'Apakah data yang Anda isi sudah benar?',
-          textAlign: TextAlign.center,
-          style: FontFamilyConstant.primaryFont.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 12,
-          ),
-        ),
-        actions: <Widget>[
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.redColor, // Warna latar belakang tombol
-                  ),
-                  child: Text(
-                    'Tidak',
-                    style: TextStyle(
-                      color: ColorConstant.whiteColor,
+            actions: <Widget>[
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            ColorConstant
+                                .redColor, // Warna latar belakang tombol
+                      ),
+                      child: Text(
+                        'Tidak',
+                        style: TextStyle(color: ColorConstant.whiteColor),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    RegisterRequestDto registerRequestDto = RegisterRequestDto(
-                      name: widget.nameController.text,
-                      email: widget.emailController.text,
-                      phone: widget.phoneController.text,
-                    );
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        RegisterRequestDto registerRequestDto =
+                            RegisterRequestDto(
+                              name: widget.nameController.text,
+                              email: widget.emailController.text,
+                              phone: widget.phoneController.text,
+                              password: widget.passwordController.text,
+                              passwordConfirm:
+                                  widget.confirmationPasswordController.text,
+                            );
 
-                    context.read<SignUpCubit>().register(registerRequestDto);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstant.blueColor, // Warna latar belakang tombol
-                  ),
-                  child: Text(
-                    'Iya',
-                    style: TextStyle(
-                      color: ColorConstant.whiteColor,
+                        context.read<SignUpCubit>().register(
+                          registerRequestDto,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            ColorConstant
+                                .blueColor, // Warna latar belakang tombol
+                      ),
+                      child: Text(
+                        'Iya',
+                        style: TextStyle(color: ColorConstant.whiteColor),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
     );
   }
 }

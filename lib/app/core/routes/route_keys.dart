@@ -6,9 +6,7 @@
 class RouteKeys {
   // splash module
   static const String splash = '/';
-  static const String root = '/root';
   static const String home = '/home';
-  static const String catalog = '/catalog';
   static const String profile = '/profile';
   static const String bookmarks = '/bookmarks';
   static const String auth = '/auth';

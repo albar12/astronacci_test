@@ -27,7 +27,7 @@ abstract class AuthRepository {
     ForgotPasswordRequestDto request,
   );
 
-  Future<Either<BaseResponseFailure, InitialRegisterModel>> authRegister(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
     RegisterRequestDto request,
   );
 
