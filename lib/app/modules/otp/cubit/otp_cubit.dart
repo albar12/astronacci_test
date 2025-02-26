@@ -57,14 +57,8 @@ class OtpCubit extends Cubit<OtpState> {
     );
   }
 
-  // #############################
-
   Future<void> requestOTPForgot(String email) async {
-    stateData = stateData.copyWith(
-      isLoading: true,
-      isLoaded: false,
-      otpRegisterSucces: false,
-    );
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
     emit(OtpLoading(stateData));
 
     final result = await authRepository.requestOTP(email);
@@ -77,8 +71,8 @@ class OtpCubit extends Cubit<OtpState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          otpSucces: false,
-          meta: right,
+          requestOTP: true,
+          responseMsg: right,
         );
         emit(OtpLoaded(stateData));
       },
@@ -100,11 +94,15 @@ class OtpCubit extends Cubit<OtpState> {
           isLoaded: true,
           isLoading: false,
           otpSucces: true,
+          responseMsg: right,
+          email: email,
         );
         emit(OtpLoaded(stateData));
       },
     );
   }
+
+  // #############################
 
   Future<void> isButtonEnabled(bool isEnable) async {
     stateData = stateData.copyWith(

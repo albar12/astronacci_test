@@ -1,10 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:octo_image/octo_image.dart';
 
 import '/path.dart';
 
@@ -20,59 +14,6 @@ class HomeBooklistComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container();
-    // state.data.bookList == null || state.data.bookList!.isEmpty
-    //     ? SingleChildScrollView(
-    //         child: Column(
-    //           children: [
-    //             Image.asset(
-    //               "assets/images/img_empty_file_ilustration.png",
-    //               width: 300,
-    //             ),
-    //             const SizedBox(height: 10),
-    //             Text(
-    //               "Belum Ada Buku",
-    //               style: FontFamilyConstant.primaryFont.copyWith(
-    //                 fontWeight: FontWeight.w800,
-    //                 fontSize: 18,
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       )
-    //     : AlignedGridView.count(
-    //         crossAxisCount: 2,
-    //         mainAxisSpacing: 10,
-    //         crossAxisSpacing: 10,
-    //         padding: EdgeInsets.symmetric(
-    //           vertical: state.data.tabList?.length == 1 ? 0 : 8,
-    //           horizontal: 8,
-    //         ),
-    //         itemCount: state.data.bookList!.reversed.length,
-    //         itemBuilder: (context, index) {
-    //           // Mengakses data dari index terakhir ke pertama
-    //           var data = state.data.bookList!.reversed.toList()[index];
-
-    //           var bookBundle = state.data.bookModelBundle?.firstWhere(
-    //             (e) => e.bookModel!.id == data.id,
-    //             orElse: () => BookModelBundle.empty(),
-    //           );
-    //           return Padding(
-    //             padding: EdgeInsets.symmetric(
-    //               vertical: state.data.tabList?.length == 1 ? 0.0 : 8.0,
-    //             ),
-    //             child: _items(
-    //               context,
-    //               data,
-    //               index,
-    //               data.isFree == 1
-    //                   ? false
-    //                   : bookBundle?.is_free == 1
-    //                       ? false
-    //                       : true,
-    //             ),
-    //           );
-    //         },
-    //       );
   }
 
   // Widget _items(

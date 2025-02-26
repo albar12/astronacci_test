@@ -21,26 +21,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late HomeCubit homeCubit;
-  late Stream<List<ConnectivityResult>> _connectivityStream;
-  late StreamSubscription<List<ConnectivityResult>>
-  _connectivityStreamSubscription;
-
   RefreshController refreshController = RefreshController();
 
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _sectionKey1 = GlobalKey();
   final GlobalKey _sectionTopKey = GlobalKey();
 
-  TabController? _controller;
-  final PageController _pageController = PageController();
-  int tabCount = 1;
-
   bool _isVisible = false;
-
-  bool hasBeenDisconnected = false;
-  bool firstReload = true;
-
-  String _formattedTimeZone = "";
 
   @override
   Widget build(BuildContext context) {
@@ -72,47 +59,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       )
                       : LayoutBuilder(
                         builder: (context, constraints) {
-                          if (MediaQuery.of(context).orientation ==
-                              Orientation.landscape) {
-                            return HomeContentDektop(
-                              size: size,
-                              state: state,
-                              controller: _controller,
-                              scrollController: _scrollController,
-                              sectionKey1: _sectionKey1,
-                              sectionTopKey: _sectionTopKey,
-                              pageController: _pageController,
-                              isDesktop: true,
-                              firstReload: firstReload,
-                            );
-                          }
-                          if (constraints.maxWidth < 600) {
-                            return HomeContent(
-                              size: size,
-                              state: state,
-                              controller: _controller,
-                              scrollController: _scrollController,
-                              sectionKey1: _sectionKey1,
-                              sectionTopKey: _sectionTopKey,
-                              pageController: _pageController,
-                              isDesktop: false,
-                              firstReload: firstReload,
-                              homeCubit: homeCubit,
-                              formattedTimeZone: _formattedTimeZone,
-                            );
-                          } else {
-                            return HomeContentTablet(
-                              size: size,
-                              state: state,
-                              controller: _controller,
-                              scrollController: _scrollController,
-                              sectionKey1: _sectionKey1,
-                              sectionTopKey: _sectionTopKey,
-                              pageController: _pageController,
-                              isDesktop: true,
-                              firstReload: firstReload,
-                            );
-                          }
+                          return HomeContent(
+                            size: size,
+                            state: state,
+                            scrollController: _scrollController,
+                            sectionKey1: _sectionKey1,
+                            sectionTopKey: _sectionTopKey,
+                            homeCubit: homeCubit,
+                          );
                         },
                       ),
               floatingActionButton: Column(
@@ -177,9 +131,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           .portraitDown, // Juga mengunci orientasi ke potrait bawah
     ]);
     iniCubit();
-    connectivityListener();
-    _initializeController();
-    _convertTimeZone();
     _scrollController.addListener(_scrollListener);
     super.initState();
   }
@@ -188,9 +139,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void dispose() {
     refreshController.dispose();
     _scrollController.dispose();
-    _controller!.dispose();
-    _pageController.dispose();
-    _connectivityStreamSubscription.cancel();
     super.dispose();
   }
 
@@ -206,46 +154,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _handleListener(BuildContext context, HomeState state) {
     var cubit = homeCubit;
 
-    if (state is HomeGetFreeBook) {
-      if (state.data.successGetFreebook) {
-        setState(() {
-          firstReload = false;
-        });
-      }
-    }
-
-    if (state is HomeLoaded) {
-      if (state.data.tabList != null || state.data.tabList!.length > tabCount) {
-        setState(() {
-          tabCount = state.data.tabList!.length;
-        });
-        _initializeController();
-      }
-
-      if (state.data.fromLocal) {}
-
-      if (state.data.deleteRecentSuccess) {}
-
-      if (state.data.refreshTokenSuccess) {}
-    }
+    if (state is HomeLoaded) {}
 
     if (state is HomeFailure) {
-      if (state.data.error!.meta.message ==
-          'Koneksi Bermasalah, Silahkan Coba Lagi') {
-      } else {
-        if (state.data.error!.meta.message == 'Token not found' ||
-            state.data.error!.meta.message == 'Unauthorized') {
-          // cubit.refreshToken();
-          Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
-        } else {
-          if (state.data.error!.meta.message != 'Route not found') {
-            snackbarError(
-              message: state.data.error!.meta.message,
-              context: context,
-            );
-          }
-        }
-      }
+      snackbarError(message: state.data.error!.meta.message, context: context);
     }
   }
 
@@ -270,49 +182,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         alignment: 0.0, // Scroll ke bagian atas
         duration: const Duration(seconds: 1), // Durasi animasi
       );
-    }
-  }
-
-  void _initializeController() {
-    _controller = TabController(length: tabCount, vsync: this);
-  }
-
-  connectivityListener() {
-    var cubit = homeCubit;
-    _connectivityStream = Connectivity().onConnectivityChanged;
-    _connectivityStreamSubscription = _connectivityStream.listen((event) {
-      if (event.contains(ConnectivityResult.none)) {
-        setState(() {
-          firstReload = true;
-        });
-
-        customWarningLog('No Internet Connection');
-      } else {
-        customInfoLog('Connected ${event.first}');
-      }
-    });
-
-    checkInitialConnection();
-  }
-
-  void checkInitialConnection() async {
-    final connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
-      setState(() {
-        firstReload = true;
-        hasBeenDisconnected = true;
-      });
-    } else {
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        setState(() {
-          firstReload = true;
-          hasBeenDisconnected = true;
-        });
-      } else {
-        setState(() {
-          hasBeenDisconnected = false;
-        });
-      }
     }
   }
 
@@ -354,42 +223,5 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
     );
-  }
-
-  Future<void> _convertTimeZone() async {
-    tz.initializeTimeZones();
-
-    var timezone = await const TimeZonLocalService().getTimeZone();
-
-    // Zona waktu Jakarta (Asia/Jakarta)
-    final jakartaTimeZone = tz.getLocation(timezone ?? '');
-
-    // Mendapatkan waktu saat ini di zona waktu Jakarta
-    final jakartaTime = tz.TZDateTime.now(jakartaTimeZone);
-
-    // Format waktu untuk WIB, WITA, WIT
-    String timeZoneAbbreviation = _getTimezoneAbbreviation(jakartaTimeZone);
-
-    setState(() {
-      _formattedTimeZone = timeZoneAbbreviation;
-    });
-  }
-
-  String _getTimezoneAbbreviation(tz.Location location) {
-    final now = tz.TZDateTime.now(location);
-
-    // Dapatkan offset UTC
-    final offset = now.timeZoneOffset;
-
-    // Menentukan WIB, WITA, WIT berdasarkan offset UTC
-    if (offset.inHours == 7) {
-      return "WIB"; // Jakarta (UTC+7)
-    } else if (offset.inHours == 8) {
-      return "WITA"; // Bali (UTC+8)
-    } else if (offset.inHours == 9) {
-      return "WIT"; // Papua (UTC+9)
-    } else {
-      return ""; // Jika offset tidak dikenal
-    }
   }
 }

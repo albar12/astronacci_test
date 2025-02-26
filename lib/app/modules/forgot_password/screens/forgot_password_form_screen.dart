@@ -5,10 +5,13 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '/path.dart';
 
 class ForgotPasswordFormScreen extends StatefulWidget {
-  const ForgotPasswordFormScreen({super.key});
+  const ForgotPasswordFormScreen({super.key, required this.email});
+
+  final String email;
 
   @override
-  State<ForgotPasswordFormScreen> createState() => _ForgotPasswordFormScreenState();
+  State<ForgotPasswordFormScreen> createState() =>
+      _ForgotPasswordFormScreenState();
 }
 
 class _ForgotPasswordFormScreenState extends State<ForgotPasswordFormScreen> {
@@ -26,37 +29,24 @@ class _ForgotPasswordFormScreenState extends State<ForgotPasswordFormScreen> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: ColorConstant.whiteColor,
-          body: state is ForgotPasswordLoading
-              ? Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: ColorConstant.primaryColor,
-                    size: 32,
+          body:
+              state is ForgotPasswordLoading
+                  ? Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: ColorConstant.primaryColor,
+                      size: 32,
+                    ),
+                  )
+                  : LayoutBuilder(
+                    builder: (context, constraints) {
+                      return ForgotPasswordFormContent(
+                        size: size,
+                        email: widget.email,
+                        passwordController: passwordController,
+                        confirmPasswordController: confirmPasswordController,
+                      );
+                    },
                   ),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (MediaQuery.of(context).orientation == Orientation.landscape) {
-                      return ForgotPasswordFormContentDesktop(
-                        size: size,
-                        passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController,
-                      );
-                    }
-                    if (constraints.maxWidth < 600) {
-                      return ForgotPasswordFormContent(
-                        size: size,
-                        passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController,
-                      );
-                    } else {
-                      return ForgotPasswordFormContent(
-                        size: size,
-                        passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController,
-                      );
-                    }
-                  },
-                ),
         );
       },
     );
@@ -66,30 +56,18 @@ class _ForgotPasswordFormScreenState extends State<ForgotPasswordFormScreen> {
     var cubit = context.read<ForgotPasswordCubit>();
     if (state is ForgotPasswordLoaded) {
       if (state.data.submitSuccess) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/auth',
-          (route) => false,
-        );
+        Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
         snackbarSuccess(
-          message: 'Berhasil mengganti password, silahkan Login menggunakan Password Anda yang baru',
+          message:
+              state.data.responseMsg?.message ??
+              'Berhasil mengganti password, silahkan Login menggunakan Password Anda yang baru',
           context: context,
         );
       }
     }
 
     if (state is ForgotPasswordFailure) {
-      if (state.data.error!.meta.message == 'Expired token') {
-        snackbarError(
-          message: "Token kadaluarsa",
-          context: context,
-        );
-      } else {
-        snackbarError(
-          message: state.data.error!.meta.message,
-          context: context,
-        );
-      }
+      snackbarError(message: state.data.error!.meta.message, context: context);
     }
   }
 }

@@ -4,43 +4,48 @@ class ForgotPasswordStateData extends Equatable {
   final bool isLoading;
   final bool isLoaded;
   final bool submitSuccess;
+  final bool forgotSuccess;
   final String? email;
-  final ForgotPasswordModel? forgotPasswordModel;
+  final ResponseMsg? responseMsg;
   final BaseResponseFailure? error;
 
   const ForgotPasswordStateData({
     this.isLoading = false,
     this.isLoaded = false,
     this.submitSuccess = false,
+    this.forgotSuccess = false,
     this.email,
-    this.forgotPasswordModel,
+    this.responseMsg,
     this.error,
   });
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isLoaded,
-        submitSuccess,
-        email,
-        forgotPasswordModel,
-        error,
-      ];
+    isLoading,
+    isLoaded,
+    submitSuccess,
+    forgotSuccess,
+    email,
+    responseMsg,
+    error,
+  ];
 
   ForgotPasswordStateData copyWith({
     bool? isLoading,
     bool? isLoaded,
     bool? submitSuccess,
+    bool? forgotSuccess,
     String? email,
-    ForgotPasswordModel? forgotPasswordModel,
+    ResponseMsg? responseMsg,
     BaseResponseFailure? error,
   }) {
     return ForgotPasswordStateData(
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
       submitSuccess: submitSuccess ?? this.submitSuccess,
+      forgotSuccess: forgotSuccess ?? this.forgotSuccess,
       email: email ?? this.email,
-      forgotPasswordModel: forgotPasswordModel ?? this.forgotPasswordModel,
+      responseMsg: responseMsg ?? this.responseMsg,
       error: error ?? error,
     );
   }
@@ -55,7 +60,7 @@ sealed class ForgotPasswordState extends Equatable {
 }
 
 final class ForgotPasswordInitial extends ForgotPasswordState {
-  const ForgotPasswordInitial() : super(const ForgotPasswordStateData(submitSuccess: false));
+  const ForgotPasswordInitial() : super(const ForgotPasswordStateData());
 }
 
 final class ForgotPasswordLoading extends ForgotPasswordState {

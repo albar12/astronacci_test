@@ -87,6 +87,49 @@ class AuthRepositoryImpl implements AuthRepository {
     return isLogin;
   }
 
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> authForgotPassword(
+    String email,
+  ) async {
+    return authRemoteDatasource.authForgotPassword(email);
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTP(
+    String email,
+  ) async {
+    return authRemoteDatasource.requestOTP(email);
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyForgotPassword(
+    String email,
+    String code,
+  ) async {
+    try {
+      var response = await authRemoteDatasource.verifyForgotPassword(
+        email,
+        code,
+      );
+      return response;
+    } catch (e) {
+      customErrorLog("error catch: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> ForgotPasswordFormSubmit(
+    ForgotPasswordRequestDto request,
+  ) async {
+    try {
+      return authRemoteDatasource.ForgotPasswordFormSubmit(request);
+    } catch (e) {
+      customErrorLog("error catch: $e");
+      rethrow;
+    }
+  }
+
   // ######################################
 
   @override
@@ -109,61 +152,6 @@ class AuthRepositoryImpl implements AuthRepository {
       await authLocalDatasource.removeRefreshToken();
       await authLocalDatasource.removeIsLogin();
       return right(null);
-    } catch (e) {
-      customErrorLog("error catch: $e");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, ForgotPasswordModel>> authForgotPassword(
-    String email,
-  ) async {
-    return authRemoteDatasource.authForgotPassword(email);
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, Meta>> requestOTP(String email) async {
-    return authRemoteDatasource.requestOTP(email);
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, Token>> verifyForgotPassword(
-    String email,
-    String code,
-  ) async {
-    try {
-      var response = await authRemoteDatasource.verifyForgotPassword(
-        email,
-        code,
-      );
-      if (response.isRight()) {
-        var token = response.getOrElse(() {
-          customErrorLog("Error get token from activation code : $response");
-          throw Exception("Error get token");
-        });
-
-        await authLocalDatasource.saveToken(token.token);
-        await authLocalDatasource.saveRefreshToken(token.refreshToken);
-      }
-
-      return response;
-    } catch (e) {
-      customErrorLog("error catch: $e");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, Meta>> ForgotPasswordFormSubmit(
-    ForgotPasswordRequestDto request,
-  ) async {
-    try {
-      var token = await authLocalDatasource.getToken();
-      return authRemoteDatasource.ForgotPasswordFormSubmit(
-        request,
-        token ?? '',
-      );
     } catch (e) {
       customErrorLog("error catch: $e");
       rethrow;

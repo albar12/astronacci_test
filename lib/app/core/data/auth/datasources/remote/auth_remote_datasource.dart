@@ -54,71 +54,61 @@ class AuthRemoteDatasource extends BaseDioService {
     );
   }
 
-  // ####################################
-
-  Future<Either<BaseResponseFailure, ForgotPasswordModel>> authForgotPassword(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authForgotPassword(
     String email,
   ) async {
-    var data = {'username': email};
-    return await baseFunction<BaseResponseFailure, ForgotPasswordModel>(
-      fromJson: (data) => ForgotPasswordModel.fromJson(data),
+    var data = {'email': email};
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
       fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(
-        '${EndpointAPIV1.auth}/forgot/${AppConfig.brand}',
-        data: data,
-      ),
-      keyData: ['data'],
+      responseMethod: dio.post(EndpointAPIV1.forgotPassword, data: data),
       customLog:
           "Dari bagian auth forgot password \n request menyeluruh : ${email.toString()}",
     );
   }
 
-  Future<Either<BaseResponseFailure, Meta>> requestOTP(String email) async {
-    return await baseFunction<BaseResponseFailure, Meta>(
-      fromJson: (data) => Meta.fromJson(data),
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTP(
+    String email,
+  ) async {
+    var data = {'email': email};
+
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
       fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.get(
-        '${EndpointAPIV1.auth}/forgot/${AppConfig.brand}/$email',
-      ),
-      keyData: ['meta'],
-      customLog: "Dari bagian request OTP",
+      responseMethod: dio.post(EndpointAPIV1.forgotPassword, data: data),
+      customLog:
+          "Dari bagian request OTP \n request menyeluruh : ${email.toString()}",
     );
   }
 
-  Future<Either<BaseResponseFailure, Token>> verifyForgotPassword(
+  Future<Either<BaseResponseFailure, ResponseMsg>> ForgotPasswordFormSubmit(
+    ForgotPasswordRequestDto request,
+  ) async {
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
+      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
+      responseMethod: dio.post(
+        EndpointAPIV1.passwordUpdate,
+        data: request.toMap(),
+      ),
+      customLog:
+          "Dari bagian forgot password form submit \n request menyeluruh : ${request.toString()}",
+    );
+  }
+
+  // ####################################
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyForgotPassword(
     String email,
     String code,
   ) async {
-    var data = {'code': code};
-    return await baseFunction<BaseResponseFailure, Token>(
-      fromJson: (data) => Token.fromJson(data),
+    var data = {'email': email, 'otp': code};
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
       fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(
-        '${EndpointAPIV1.auth}/forgot/${AppConfig.brand}/$email',
-        data: data,
-      ),
-      keyData: ['data'],
+      responseMethod: dio.post(EndpointAPIV1.verifyForgotPassword, data: data),
       customLog:
-          "Dari bagian verify forgot password \n request menyeluruh : ${code.toString()}",
-    );
-  }
-
-  Future<Either<BaseResponseFailure, Meta>> ForgotPasswordFormSubmit(
-    ForgotPasswordRequestDto request,
-    String token,
-  ) async {
-    var headers = {'Authorization': "Bearer $token"};
-    return await baseFunction<BaseResponseFailure, Meta>(
-      fromJson: (data) => Meta.fromJson(data),
-      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.put(
-        '${EndpointAPIV1.auth}/forgot/create/password/${AppConfig.brand}',
-        data: request.toMap(),
-        options: Options(headers: headers),
-      ),
-      keyData: ['meta'],
-      customLog:
-          "Dari bagian forgot password form submit \n request menyeluruh : ${request.toString()}",
+          "Dari bagian verify forgot password \n request menyeluruh : ${data.toString()}",
     );
   }
 

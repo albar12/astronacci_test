@@ -7,6 +7,7 @@ class OtpStateData extends Equatable {
   final bool otpRegisterSucces;
   final bool isButtonEnabled;
   final bool requestOTP;
+  final String? email;
   final Meta? meta;
   final ResponseMsg? responseMsg;
   final BaseResponseFailure? error;
@@ -18,6 +19,7 @@ class OtpStateData extends Equatable {
     this.isButtonEnabled = false,
     this.otpRegisterSucces = false,
     this.requestOTP = false,
+    this.email,
     this.meta,
     this.responseMsg,
     this.error,
@@ -31,6 +33,7 @@ class OtpStateData extends Equatable {
     otpRegisterSucces,
     isButtonEnabled,
     requestOTP,
+    email,
     meta,
     responseMsg,
     error,
@@ -43,6 +46,7 @@ class OtpStateData extends Equatable {
     bool? otpRegisterSucces,
     bool? isButtonEnabled,
     bool? requestOTP,
+    String? email,
     Meta? meta,
     ResponseMsg? responseMsg,
     BaseResponseFailure? error,
@@ -54,6 +58,7 @@ class OtpStateData extends Equatable {
       otpRegisterSucces: otpRegisterSucces ?? this.otpRegisterSucces,
       isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
       requestOTP: requestOTP ?? this.requestOTP,
+      email: email ?? this.email,
       meta: meta ?? this.meta,
       responseMsg: responseMsg ?? this.responseMsg,
       error: error ?? error,

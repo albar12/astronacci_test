@@ -7,16 +7,19 @@ class ForgotPasswordFormContent extends StatefulWidget {
   const ForgotPasswordFormContent({
     super.key,
     required this.size,
+    required this.email,
     required this.passwordController,
     required this.confirmPasswordController,
   });
 
   final Size size;
+  final String email;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
 
   @override
-  State<ForgotPasswordFormContent> createState() => _ForgotPasswordFormContentState();
+  State<ForgotPasswordFormContent> createState() =>
+      _ForgotPasswordFormContentState();
 }
 
 class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
@@ -35,13 +38,8 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 8,
-        ),
-        child: Center(
-          child: _contentInput(context),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        child: Center(child: _contentInput(context)),
       ),
     );
   }
@@ -61,10 +59,7 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,9 +68,13 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/images/img_text_logo.png",
-                    width: 200,
+                  Text(
+                    "Forgot Password",
+                    style: FontFamilyConstant.primaryFont.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: ColorConstant.blackColor,
+                      fontSize: 24,
+                    ),
                   ),
                 ],
               ),
@@ -103,10 +102,7 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
                 ),
               ),
               const SizedBox(height: 16),
-              _headerInputField(
-                "Password",
-                isMandatory: true,
-              ),
+              _headerInputField("Password", isMandatory: true),
               const SizedBox(height: 8),
               CustomTextFormField(
                 obscureText: obscureText,
@@ -132,15 +128,14 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
                     }
                   },
                   icon: Icon(
-                    obscureText == false ? Icons.visibility : Icons.visibility_off,
+                    obscureText == false
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              _headerInputField(
-                "Konfirmasi Password",
-                isMandatory: true,
-              ),
+              _headerInputField("Konfirmasi Password", isMandatory: true),
               const SizedBox(height: 8),
               CustomTextFormField(
                 obscureText: obscureConfirmPassword,
@@ -166,7 +161,9 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
                     }
                   },
                   icon: Icon(
-                    obscureConfirmPassword == false ? Icons.visibility : Icons.visibility_off,
+                    obscureConfirmPassword == false
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                   ),
                 ),
               ),
@@ -182,31 +179,40 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
                     ),
                   ),
                   onPressed: () async {
-                    if (widget.passwordController.text.isEmpty || widget.confirmPasswordController.text.isEmpty) {
+                    if (widget.passwordController.text.isEmpty ||
+                        widget.confirmPasswordController.text.isEmpty) {
                       snackbarError(
                         title: 'Perhatian',
                         message: 'Mohon isi semua data wajib',
                         context: context,
                       );
-                    } else if (widget.passwordController.text.length < 6 || widget.passwordController.text.length > 50) {
+                    } else if (widget.passwordController.text.length < 6 ||
+                        widget.passwordController.text.length > 50) {
                       snackbarError(
                         title: 'Perhatian',
-                        message: 'Panjang Password minimal 6 karakter & maksimal 50 karakter',
+                        message:
+                            'Panjang Password minimal 6 karakter & maksimal 50 karakter',
                         context: context,
                       );
-                    } else if (widget.passwordController.text != widget.confirmPasswordController.text) {
+                    } else if (widget.passwordController.text !=
+                        widget.confirmPasswordController.text) {
                       snackbarError(
                         title: 'Perhatian',
                         message: 'Password & Konfimari Password tidak sesuai',
                         context: context,
                       );
                     } else {
-                      ForgotPasswordRequestDto forgotPasswordRequestDto = ForgotPasswordRequestDto(
-                        password: widget.passwordController.text,
-                        password_confirmation: widget.confirmPasswordController.text,
-                      );
+                      ForgotPasswordRequestDto forgotPasswordRequestDto =
+                          ForgotPasswordRequestDto(
+                            email: widget.email,
+                            password: widget.passwordController.text,
+                            password_confirmation:
+                                widget.confirmPasswordController.text,
+                          );
 
-                      context.read<ForgotPasswordCubit>().forgotPasswordFormSubmit(forgotPasswordRequestDto);
+                      context
+                          .read<ForgotPasswordCubit>()
+                          .forgotPasswordFormSubmit(forgotPasswordRequestDto);
                     }
                   },
                   child: Text(
@@ -225,10 +231,7 @@ class _ForgotPasswordFormContentState extends State<ForgotPasswordFormContent> {
     );
   }
 
-  Widget _headerInputField(
-    String label, {
-    bool isMandatory = false,
-  }) {
+  Widget _headerInputField(String label, {bool isMandatory = false}) {
     return Row(
       children: [
         Text(

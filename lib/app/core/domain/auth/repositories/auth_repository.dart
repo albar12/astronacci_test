@@ -20,6 +20,21 @@ abstract class AuthRepository {
 
   Future<bool?> getIsLogin();
 
+  Future<Either<BaseResponseFailure, ResponseMsg>> authForgotPassword(
+    String email,
+  );
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTP(String email);
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyForgotPassword(
+    String email,
+    String code,
+  );
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> ForgotPasswordFormSubmit(
+    ForgotPasswordRequestDto request,
+  );
+
   // ####################
 
   Future<String?> getToken();
@@ -29,21 +44,6 @@ abstract class AuthRepository {
   Future<String> getName();
 
   Future<Either<BaseResponseFailure, void>> authLogout();
-
-  Future<Either<BaseResponseFailure, ForgotPasswordModel>> authForgotPassword(
-    String email,
-  );
-
-  Future<Either<BaseResponseFailure, Meta>> requestOTP(String email);
-
-  Future<Either<BaseResponseFailure, Token>> verifyForgotPassword(
-    String email,
-    String code,
-  );
-
-  Future<Either<BaseResponseFailure, Meta>> ForgotPasswordFormSubmit(
-    ForgotPasswordRequestDto request,
-  );
 
   Future<Either<BaseResponseFailure, SignUpModel>> authRegisterUpdate(
     RegisterUpdateDto request,

@@ -170,8 +170,7 @@ class _OtpContentState extends State<OtpContent> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) =>
-                                        const ForgotPasswordFormScreen(),
+                                    (context) => const ForgotPasswordScreen(),
                               ),
                               (route) => true,
                             );
@@ -204,10 +203,17 @@ class _OtpContentState extends State<OtpContent> {
                         onPressed: () async {
                           if (widget.otpController.text.isNotEmpty) {
                             var otpCubit = context.read<OtpCubit>();
-                            otpCubit.verifyRegister(
-                              widget.email,
-                              widget.otpController.text,
-                            );
+                            if (widget.isRegister == true) {
+                              otpCubit.verifyRegister(
+                                widget.email,
+                                widget.otpController.text,
+                              );
+                            } else {
+                              otpCubit.verifyForgotPassword(
+                                widget.email,
+                                widget.otpController.text,
+                              );
+                            }
                           } else {
                             snackbarError(
                               title: 'Perhatian',
@@ -238,7 +244,11 @@ class _OtpContentState extends State<OtpContent> {
                     onPressed: () {
                       if (isButtonEnabled) {
                         var otpCubit = context.read<OtpCubit>();
-                        otpCubit.requestOTP(widget.email);
+                        if (widget.isRegister == true) {
+                          otpCubit.requestOTP(widget.email);
+                        } else {
+                          otpCubit.requestOTPForgot(widget.email);
+                        }
                       } else {
                         snackbarError(
                           message:

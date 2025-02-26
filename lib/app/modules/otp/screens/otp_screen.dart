@@ -38,7 +38,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ForgotPasswordFormScreen(),
+                  builder: (context) => const ForgotPasswordScreen(),
                 ),
                 (route) => true,
               );
@@ -62,7 +62,7 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     iniCubit();
     if (widget.isRegister != true) {
-      // otpCubit.requestOTP(widget.username);
+      otpCubit.requestOTPForgot(widget.email);
     }
     super.initState();
   }
@@ -94,9 +94,14 @@ class _OtpScreenState extends State<OtpScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const ForgotPasswordFormScreen(),
+            builder: (context) => ForgotPasswordFormScreen(email: widget.email),
           ),
           (route) => true,
+        );
+
+        snackbarSuccess(
+          message: state.data.responseMsg?.message ?? 'Berhasil Verifikasi',
+          context: context,
         );
       }
 

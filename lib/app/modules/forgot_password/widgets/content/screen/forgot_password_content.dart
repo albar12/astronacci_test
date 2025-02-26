@@ -28,13 +28,8 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 8,
-        ),
-        child: Center(
-          child: _contentInput(context),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        child: Center(child: _contentInput(context)),
       ),
     );
   }
@@ -54,10 +49,7 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,9 +58,13 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    "assets/images/img_text_logo.png",
-                    width: 200,
+                  Text(
+                    "Forgot Password",
+                    style: FontFamilyConstant.primaryFont.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: ColorConstant.blackColor,
+                      fontSize: 24,
+                    ),
                   ),
                 ],
               ),
@@ -105,9 +101,7 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
                   fontSize: 14,
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               CustomTextFormField(
                 controller: widget.emailController,
                 hint: "Masukan email",
@@ -152,9 +146,7 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     flex: 3,
                     child: SizedBox(
@@ -174,7 +166,11 @@ class _ForgotPasswordContentState extends State<ForgotPasswordContent> {
                               context: context,
                             );
                           } else {
-                            context.read<ForgotPasswordCubit>().forgotPasswordSubmit(widget.emailController.text);
+                            context
+                                .read<ForgotPasswordCubit>()
+                                .forgotPasswordSubmit(
+                                  widget.emailController.text,
+                                );
                           }
                         },
                         child: Text(

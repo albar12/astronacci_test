@@ -21,4 +21,7 @@ class EndpointAPIV1 {
   static const String register = '/register';
   static const String resendOTP = '/resend-otp';
   static const String verifyOTP = '/verify-otp';
+  static const String forgotPassword = '/password/request-otp';
+  static const String verifyForgotPassword = '/password/verify-otp';
+  static const String passwordUpdate = '/password/update';
 }
