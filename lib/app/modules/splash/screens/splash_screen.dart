@@ -33,14 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/img_app_logo.png',
-                    ),
-                    const SizedBox(height: 10),
-                    Image.asset(
-                      'assets/images/img_splash_text.png',
-                    ),
-                    const SizedBox(height: 24),
                     Visibility(
                       visible: size.width < 600 ? true : false,
                       child: const CustomLoading(),
@@ -57,32 +49,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // context.read<SplashCubit>().getProfile();
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushNamedAndRemoveUntil(
-        // ignore: use_build_context_synchronously
-        context,
-        '/auth',
-        (route) => false,
-      );
-    });
+    context.read<SplashCubit>().getIsLogin();
     super.initState();
   }
 
   void _handleListener(BuildContext context, SplashState state) {
-    var cubit = context.read<SplashCubit>();
     if (state is SplashLoaded) {
-      if (state.data.isGetProfileSuccess) {
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushNamedAndRemoveUntil(
-            // ignore: use_build_context_synchronously
-            context,
-            '/home',
-            (route) => false,
-          );
-        });
-      }
-
       if (state.data.isLogin == true) {
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushNamedAndRemoveUntil(
@@ -92,9 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
             (route) => false,
           );
         });
-      }
-
-      if (state.data.isLogin == false) {
+      } else {
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushNamedAndRemoveUntil(
             // ignore: use_build_context_synchronously
@@ -103,35 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
             (route) => false,
           );
         });
-      }
-
-      if (state.data.refreshTokenSuccess) {
-        cubit.getProfile();
-      }
-    }
-
-    if (state is SplashError) {
-      if (state.data.error!.meta.message == 'Koneksi Bermasalah, Silahkan Coba Lagi') {
-        cubit.getIsLogin();
-      } else {
-        if (state.data.error!.meta.message == 'Token not found' || state.data.error!.meta.message == 'Unauthorized') {
-          // cubit.refreshToken();
-          Navigator.pushNamedAndRemoveUntil(
-            // ignore: use_build_context_synchronously
-            context,
-            '/auth',
-            (route) => false,
-          );
-        } else {
-          Future.delayed(const Duration(seconds: 2), () {
-            Navigator.pushNamedAndRemoveUntil(
-              // ignore: use_build_context_synchronously
-              context,
-              '/auth',
-              (route) => false,
-            );
-          });
-        }
       }
     }
   }
