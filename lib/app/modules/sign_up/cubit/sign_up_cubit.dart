@@ -25,6 +25,7 @@ class SignUpCubit extends Cubit<SignUpState> {
           isLoaded: true,
           isLoading: false,
           responseMsg: right,
+          registerRequestDto: dto,
         );
         emit(SignUpLoaded(stateData));
       },

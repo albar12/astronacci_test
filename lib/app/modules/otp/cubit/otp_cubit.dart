@@ -13,12 +13,57 @@ class OtpCubit extends Cubit<OtpState> {
   OtpCubit(this.authRepository, this.profileRepository)
     : super(const OtpInitial());
 
+  Future<void> requestOTP(String email) async {
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
+    emit(OtpLoading(stateData));
+
+    final result = await authRepository.requestOTPRegister(email);
+    result.fold(
+      (left) {
+        stateData = stateData.copyWith(error: left);
+        emit(OtpFailure(stateData));
+      },
+      (right) {
+        stateData = stateData.copyWith(
+          isLoaded: true,
+          isLoading: false,
+          requestOTP: true,
+          responseMsg: right,
+        );
+        emit(OtpLoaded(stateData));
+      },
+    );
+  }
+
+  Future<void> verifyRegister(String email, String code) async {
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
+    emit(OtpLoading(stateData));
+
+    final result = await authRepository.verifyRegister(email, code);
+    result.fold(
+      (left) {
+        stateData = stateData.copyWith(error: left);
+        emit(OtpFailure(stateData));
+      },
+      (right) async {
+        stateData = stateData.copyWith(
+          isLoaded: true,
+          isLoading: false,
+          otpRegisterSucces: true,
+          responseMsg: right,
+        );
+        emit(OtpLoaded(stateData));
+      },
+    );
+  }
+
+  // #############################
+
   Future<void> requestOTPForgot(String email) async {
     stateData = stateData.copyWith(
       isLoading: true,
       isLoaded: false,
       otpRegisterSucces: false,
-      removeAccountSucces: false,
     );
     emit(OtpLoading(stateData));
 
@@ -32,7 +77,6 @@ class OtpCubit extends Cubit<OtpState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          requestSucces: true,
           otpSucces: false,
           meta: right,
         );
@@ -62,57 +106,6 @@ class OtpCubit extends Cubit<OtpState> {
     );
   }
 
-  Future<void> requestOTP(String email) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.requestOTPRegister(email);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          requestSucces: true,
-          otpSucces: false,
-          otpRegisterSucces: false,
-          meta: right,
-        );
-        emit(OtpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> verifyRegister(String email, String code) async {
-    stateData = stateData.copyWith(
-      isLoading: true,
-      isLoaded: false,
-      removeAccountSucces: false,
-      deactiveAccountSucces: false,
-    );
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.verifyRegister(email, code);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) async {
-        await profileRepository.getProfile();
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          otpRegisterSucces: true,
-        );
-        emit(OtpLoaded(stateData));
-      },
-    );
-  }
-
   Future<void> isButtonEnabled(bool isEnable) async {
     stateData = stateData.copyWith(
       isLoaded: true,
@@ -136,7 +129,6 @@ class OtpCubit extends Cubit<OtpState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          requestSucces: true,
           meta: right,
         );
         emit(OtpLoaded(stateData));
@@ -155,11 +147,7 @@ class OtpCubit extends Cubit<OtpState> {
         emit(OtpFailure(stateData));
       },
       (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          removeAccountSucces: true,
-        );
+        stateData = stateData.copyWith(isLoaded: true, isLoading: false);
         emit(OtpLoaded(stateData));
       },
     );
@@ -179,7 +167,6 @@ class OtpCubit extends Cubit<OtpState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          requestSucces: true,
           meta: right,
         );
         emit(OtpLoaded(stateData));
@@ -188,11 +175,7 @@ class OtpCubit extends Cubit<OtpState> {
   }
 
   Future<void> verifyDeactiveAccount(String email, String code) async {
-    stateData = stateData.copyWith(
-      isLoading: true,
-      isLoaded: false,
-      removeAccountSucces: false,
-    );
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
     emit(OtpLoading(stateData));
 
     final result = await authRepository.verifyDeactiveAccount(email, code);
@@ -202,11 +185,7 @@ class OtpCubit extends Cubit<OtpState> {
         emit(OtpFailure(stateData));
       },
       (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          deactiveAccountSucces: true,
-        );
+        stateData = stateData.copyWith(isLoaded: true, isLoading: false);
         emit(OtpLoaded(stateData));
       },
     );

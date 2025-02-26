@@ -11,68 +11,42 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authRepository) : super(const AuthInitial());
 
   Future<void> authLogin(AuthRequestDto dto) async {
-    stateData = stateData.copyWith(
-      isLoading: true,
-      isLoaded: false,
-      auth: null,
-      truncateSuccess: false,
-    );
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
     emit(AuthLoading(stateData));
 
+    final result = await authRepository.authLogin(dto);
+    result.fold(
+      (left) {
+        stateData = stateData.copyWith(error: left);
+        emit(AuthFailure(stateData));
+      },
+      (right) {
+        stateData = stateData.copyWith(
+          isLoaded: true,
+          isLoading: false,
+          successLogin: true,
+          user: right,
+        );
+        emit(AuthLoaded(stateData));
+      },
+    );
+  }
+
+  Future<void> getIsLogin() async {
+    final result = await authRepository.getIsLogin();
     stateData = stateData.copyWith(
       isLoaded: true,
       isLoading: false,
-      successLogin: true,
-      dataIsFound: true,
-      error: null,
-      isActivation: false,
+      isLogin: result,
     );
     emit(AuthLoaded(stateData));
-
-    // final result = await authRepository.authLogin(dto);
-    // result.fold(
-    //   (left) {
-    //     if (left.meta.message == 'Data found, but account is not active') {
-    //       stateData = stateData.copyWith(
-    //         error: left,
-    //         isActivation: true,
-    //         emailOTP: left.meta.emailOTP,
-    //       );
-    //       emit(AuthFailure(stateData));
-    //     } else {
-    //       stateData = stateData.copyWith(
-    //         error: left,
-    //       );
-    //       emit(AuthFailure(stateData));
-    //     }
-    //   },
-    //   (right) {
-    //     stateData = stateData.copyWith(
-    //       isLoaded: true,
-    //       isLoading: false,
-    //       successLogin: right.id != null ? true : false,
-    //       dataIsFound: true,
-    //       auth: right,
-    //       error: null,
-    //       isActivation: false,
-    //     );
-    //     emit(AuthLoaded(stateData));
-    //   },
-    // );
   }
+
+  // ######################
 
   Future<void> getLastLogin() async {
     final result = await authRepository.getLastLogin();
-    stateData = stateData.copyWith(
-      lastLogin: result,
-      successLogin: false,
-      dataIsFound: false,
-    );
-    emit(AuthLoaded(stateData));
-  }
-
-  Future<void> accountActivation() async {
-    stateData = stateData.copyWith(dataIsFound: true, isActivation: false);
+    stateData = stateData.copyWith(successLogin: false);
     emit(AuthLoaded(stateData));
   }
 }

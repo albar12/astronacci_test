@@ -8,6 +8,35 @@ class ResponseMsg {
   }
 }
 
+class User {
+  final int id;
+  final String nama;
+  final String email;
+  final String noWhatsapp;
+  final bool isActive;
+  final String token;
+
+  User({
+    required this.id,
+    required this.nama,
+    required this.email,
+    required this.noWhatsapp,
+    required this.isActive,
+    required this.token,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      nama: json['nama'],
+      email: json['email'],
+      noWhatsapp: json['no_whatsapp'],
+      isActive: json['is_active'],
+      token: json['token'],
+    );
+  }
+}
+
 class Auth {
   final int? id;
   final int? id_number;

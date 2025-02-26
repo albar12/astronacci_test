@@ -13,9 +13,12 @@ class EndpointAPIV1 {
   static const String member = '/member';
   static const String memberPayment = '/member/payment';
   static const String university = '/new-university';
-  static const String auth = '/auth';
   static const String premiumBandle = '/premium-bundle';
   static const String bookmark = '/bookmark';
+  static const String auth = '/auth';
 
+  static const String login = '/login';
   static const String register = '/register';
+  static const String resendOTP = '/resend-otp';
+  static const String verifyOTP = '/verify-otp';
 }

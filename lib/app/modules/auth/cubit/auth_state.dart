@@ -4,13 +4,8 @@ class AuthStateData extends Equatable {
   final bool isLoading;
   final bool isLoaded;
   final bool successLogin;
-  final bool truncateSuccess;
-  final bool sameLogin;
-  final bool dataIsFound;
-  final bool isActivation;
-  final String? lastLogin;
-  final String? emailOTP;
-  final Auth? auth;
+  final bool isLogin;
+  final User? user;
   final AuthRequestDto? authDto;
   final BaseResponseFailure? error;
 
@@ -18,44 +13,29 @@ class AuthStateData extends Equatable {
     this.isLoading = false,
     this.isLoaded = false,
     this.successLogin = false,
-    this.truncateSuccess = false,
-    this.sameLogin = false,
-    this.dataIsFound = false,
-    this.isActivation = false,
-    this.emailOTP,
-    this.auth,
+    this.isLogin = false,
+    this.user,
     this.authDto,
-    this.lastLogin,
     this.error,
   });
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isLoaded,
-        successLogin,
-        truncateSuccess,
-        sameLogin,
-        dataIsFound,
-        isActivation,
-        emailOTP,
-        auth,
-        authDto,
-        lastLogin,
-        error,
-      ];
+    isLoading,
+    isLoaded,
+    successLogin,
+    isLogin,
+    user,
+    authDto,
+    error,
+  ];
 
   AuthStateData copyWith({
     bool? isLoading,
     bool? isLoaded,
     bool? successLogin,
-    bool? truncateSuccess,
-    bool? sameLogin,
-    bool? dataIsFound,
-    bool? isActivation,
-    String? lastLogin,
-    String? emailOTP,
-    Auth? auth,
+    bool? isLogin,
+    User? user,
     AuthRequestDto? authDto,
     BaseResponseFailure? error,
   }) {
@@ -63,13 +43,8 @@ class AuthStateData extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
       successLogin: successLogin ?? this.successLogin,
-      truncateSuccess: truncateSuccess ?? this.truncateSuccess,
-      sameLogin: sameLogin ?? this.sameLogin,
-      dataIsFound: dataIsFound ?? this.dataIsFound,
-      isActivation: isActivation ?? this.isActivation,
-      lastLogin: lastLogin ?? this.lastLogin,
-      emailOTP: emailOTP ?? this.emailOTP,
-      auth: auth ?? this.auth,
+      isLogin: isLogin ?? this.isLogin,
+      user: user ?? this.user,
       authDto: authDto ?? this.authDto,
       error: error ?? this.error,
     );

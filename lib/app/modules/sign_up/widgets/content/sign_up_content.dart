@@ -159,7 +159,7 @@ class _SignUpContentState extends State<SignUpContent> {
                 ),
               ),
               const SizedBox(height: 16),
-              _headerInputField("No. WhatsApp"),
+              _headerInputField("No. WhatsApp", isMandatory: true),
               const SizedBox(height: 8),
               CustomTextFormField(
                 controller: widget.phoneController,
@@ -292,7 +292,8 @@ class _SignUpContentState extends State<SignUpContent> {
                               widget
                                   .confirmationPasswordController
                                   .text
-                                  .isEmpty) {
+                                  .isEmpty ||
+                              widget.phoneController.text.isEmpty) {
                             snackbarError(
                               title: 'Perhatian',
                               message: 'Mohon isi semua data wajib',
@@ -309,6 +310,21 @@ class _SignUpContentState extends State<SignUpContent> {
                             snackbarError(
                               title: 'Perhatian',
                               message: 'Format email tidak sesuai',
+                              context: context,
+                            );
+                          } else if (widget.passwordController.text.length <
+                              6) {
+                            snackbarError(
+                              title: 'Perhatian',
+                              message: 'Panjang Password Minimal 6 Karakter!',
+                              context: context,
+                            );
+                          } else if (widget.passwordController.text !=
+                              widget.confirmationPasswordController.text) {
+                            snackbarError(
+                              title: 'Perhatian',
+                              message:
+                                  'Password Dan Konfirmasi Password Tidak Sesuai!',
                               context: context,
                             );
                           } else {
@@ -420,6 +436,7 @@ class _SignUpContentState extends State<SignUpContent> {
                         context.read<SignUpCubit>().register(
                           registerRequestDto,
                         );
+                        Navigator.of(context).pop(false);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:

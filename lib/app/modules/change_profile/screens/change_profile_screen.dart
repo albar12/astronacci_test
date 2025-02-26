@@ -127,22 +127,6 @@ class _ChangeProfileScreenState extends State<ChangeProfileScreen> {
           context: context,
         );
       }
-
-      if (state.data.removeSuccess) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => OtpScreen(
-                  username: widget.profileModel?.email ?? '',
-                  profileModel: widget.profileModel,
-                  brand: AppConfig.brand,
-                  removeAccount: true,
-                ),
-          ),
-          (route) => true,
-        );
-      }
     }
 
     if (state is ChangeProfileFailure) {

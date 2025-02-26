@@ -9,24 +9,14 @@ class OtpContent extends StatefulWidget {
   const OtpContent({
     super.key,
     required this.size,
-    required this.username,
-    required this.brand,
     required this.otpController,
-    this.forgotPassword,
-    this.removeAccount,
-    this.deactiveAccount,
-    this.fromAuth,
-    this.profileModel,
+    required this.email,
+    this.isRegister,
   });
   final Size size;
-  final String username;
-  final String brand;
   final TextEditingController otpController;
-  final bool? forgotPassword;
-  final bool? removeAccount;
-  final bool? deactiveAccount;
-  final bool? fromAuth;
-  final ProfileModel? profileModel;
+  final String email;
+  final bool? isRegister;
 
   @override
   State<OtpContent> createState() => _OtpContentState();
@@ -78,7 +68,14 @@ class _OtpContentState extends State<OtpContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/images/img_text_logo.png", width: 200),
+                  Text(
+                    "Verify OTP",
+                    textAlign: TextAlign.center,
+                    style: FontFamilyConstant.primaryFont.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -162,27 +159,21 @@ class _OtpContentState extends State<OtpContent> {
                           ),
                         ),
                         onPressed: () {
-                          if (widget.forgotPassword == true) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => const ForgotPasswordScreen(),
-                              ),
-                              (route) => false,
-                            );
-                          } else if (widget.fromAuth == true) {
-                            Navigator.pushNamedAndRemoveUntil(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              '/auth',
-                              (route) => false,
-                            );
-                          } else {
+                          if (widget.isRegister == true) {
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               '/sign-up',
                               (route) => false,
+                            );
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        const ForgotPasswordFormScreen(),
+                              ),
+                              (route) => true,
                             );
                           }
                         },
@@ -212,20 +203,10 @@ class _OtpContentState extends State<OtpContent> {
                         ),
                         onPressed: () async {
                           if (widget.otpController.text.isNotEmpty) {
-                            var otpBloc = context.read<OtpCubit>();
-                            // deviceId: $deviceId
-                            customInfoLog("""
-                          username: ${widget.username}
-                            brand: ${AppConfig.brand}
-                            """);
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        const ForgotPasswordFormScreen(),
-                              ),
-                              (route) => true,
+                            var otpCubit = context.read<OtpCubit>();
+                            otpCubit.verifyRegister(
+                              widget.email,
+                              widget.otpController.text,
                             );
                           } else {
                             snackbarError(
@@ -256,21 +237,8 @@ class _OtpContentState extends State<OtpContent> {
                   TextButton(
                     onPressed: () {
                       if (isButtonEnabled) {
-                        if (widget.forgotPassword == true) {
-                          context.read<OtpCubit>().requestOTPForgot(
-                            widget.username,
-                          );
-                        } else if (widget.removeAccount == true) {
-                          context.read<OtpCubit>().requestOTPRemoveAccount(
-                            widget.username,
-                          );
-                        } else if (widget.deactiveAccount == true) {
-                          context.read<OtpCubit>().requestOTPDeactiveAccount(
-                            widget.username,
-                          );
-                        } else {
-                          context.read<OtpCubit>().requestOTP(widget.username);
-                        }
+                        var otpCubit = context.read<OtpCubit>();
+                        otpCubit.requestOTP(widget.email);
                       } else {
                         snackbarError(
                           message:
@@ -330,162 +298,6 @@ class _OtpContentState extends State<OtpContent> {
             ),
           ),
       ],
-    );
-  }
-
-  Future<dynamic> _removeDialog(BuildContext context) async {
-    var otpBloc = context.read<OtpCubit>();
-    return showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Icon(
-              Icons.warning,
-              color: ColorConstant.yellowColor,
-              size: 50,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Hapus Akun',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Apakah Anda yakin akan menghapus akun?',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(fontSize: 14),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .redColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-
-                        otpBloc.verifyRemoveAccount(
-                          widget.username,
-                          widget.otpController.text,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .blueColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Iya',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-    );
-  }
-
-  Future<dynamic> _deactiveDialog(BuildContext context) async {
-    var otpBloc = context.read<OtpCubit>();
-    return showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Icon(
-              Icons.warning,
-              color: ColorConstant.yellowColor,
-              size: 50,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Non-Aktif Akun',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Apakah Anda yakin akan menonaktifkan akun?',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(fontSize: 14),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .redColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-
-                        otpBloc.verifyDeactiveAccount(
-                          widget.username,
-                          widget.otpController.text,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .blueColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Iya',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
     );
   }
 }

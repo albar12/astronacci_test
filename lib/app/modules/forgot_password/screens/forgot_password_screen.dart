@@ -18,34 +18,36 @@ class ForgotPasswordScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: ColorConstant.whiteColor,
-          body: state is ForgotPasswordLoading
-              ? Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: ColorConstant.primaryColor,
-                    size: 32,
+          body:
+              state is ForgotPasswordLoading
+                  ? Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: ColorConstant.primaryColor,
+                      size: 32,
+                    ),
+                  )
+                  : LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (MediaQuery.of(context).orientation ==
+                          Orientation.landscape) {
+                        return ForgotPasswordContentDesktop(
+                          size: size,
+                          emailController: emailController,
+                        );
+                      }
+                      if (constraints.maxWidth < 600) {
+                        return ForgotPasswordContent(
+                          size: size,
+                          emailController: emailController,
+                        );
+                      } else {
+                        return ForgotPasswordContentTablet(
+                          size: size,
+                          emailController: emailController,
+                        );
+                      }
+                    },
                   ),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (MediaQuery.of(context).orientation == Orientation.landscape) {
-                      return ForgotPasswordContentDesktop(
-                        size: size,
-                        emailController: emailController,
-                      );
-                    }
-                    if (constraints.maxWidth < 600) {
-                      return ForgotPasswordContent(
-                        size: size,
-                        emailController: emailController,
-                      );
-                    } else {
-                      return ForgotPasswordContentTablet(
-                        size: size,
-                        emailController: emailController,
-                      );
-                    }
-                  },
-                ),
         );
       },
     );
@@ -54,27 +56,12 @@ class ForgotPasswordScreen extends StatelessWidget {
   void _handleListener(BuildContext context, ForgotPasswordState state) {
     var cubit = context.read<ForgotPasswordCubit>();
     if (state is ForgotPasswordLoaded) {
-      if (state.data.submitSuccess) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OtpScreen(
-              username: state.data.forgotPasswordModel?.email ?? '',
-              brand: AppConfig.brand,
-              forgotPassword: true,
-            ),
-          ),
-          (route) => true,
-        );
-      }
+      if (state.data.submitSuccess) {}
     }
 
     if (state is ForgotPasswordFailure) {
       if (state.data.error!.meta.message == "Data not found") {
-        snackbarError(
-          message: "Data tidak ditemukan",
-          context: context,
-        );
+        snackbarError(message: "Data tidak ditemukan", context: context);
       } else {
         snackbarError(
           message: state.data.error!.meta.message,

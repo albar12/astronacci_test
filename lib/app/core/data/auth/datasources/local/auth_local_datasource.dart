@@ -29,6 +29,18 @@ class AuthLocalDatasource {
     return await storage.remove("tokenId");
   }
 
+  Future<void> removeEmail() async {
+    return await storage.remove("email");
+  }
+
+  Future<String?> getEmail() async {
+    return await storage.getString("email");
+  }
+
+  Future<void> saveEmail(String email) async {
+    return await storage.setString("email", email);
+  }
+
   Future<String?> getRefreshToken() async {
     return await storage.getString("refreshToken");
   }

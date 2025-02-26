@@ -88,7 +88,6 @@ class _AuthContentState extends State<AuthContent> {
               ),
               const SizedBox(height: 8),
               CustomTextFormField(
-                isReadOnly: widget.state.data.dataIsFound ? true : false,
                 controller: widget.emailController,
                 hint: "Masukan email",
                 keyboardType: TextInputType.emailAddress,

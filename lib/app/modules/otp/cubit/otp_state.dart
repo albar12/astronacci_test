@@ -5,11 +5,10 @@ class OtpStateData extends Equatable {
   final bool isLoaded;
   final bool otpSucces;
   final bool otpRegisterSucces;
-  final bool removeAccountSucces;
-  final bool deactiveAccountSucces;
   final bool isButtonEnabled;
-  final bool requestSucces;
+  final bool requestOTP;
   final Meta? meta;
+  final ResponseMsg? responseMsg;
   final BaseResponseFailure? error;
 
   const OtpStateData({
@@ -18,37 +17,34 @@ class OtpStateData extends Equatable {
     this.otpSucces = false,
     this.isButtonEnabled = false,
     this.otpRegisterSucces = false,
-    this.removeAccountSucces = false,
-    this.deactiveAccountSucces = false,
-    this.requestSucces = false,
+    this.requestOTP = false,
     this.meta,
+    this.responseMsg,
     this.error,
   });
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isLoaded,
-        otpSucces,
-        otpRegisterSucces,
-        removeAccountSucces,
-        deactiveAccountSucces,
-        isButtonEnabled,
-        requestSucces,
-        meta,
-        error,
-      ];
+    isLoading,
+    isLoaded,
+    otpSucces,
+    otpRegisterSucces,
+    isButtonEnabled,
+    requestOTP,
+    meta,
+    responseMsg,
+    error,
+  ];
 
   OtpStateData copyWith({
     bool? isLoading,
     bool? isLoaded,
     bool? otpSucces,
     bool? otpRegisterSucces,
-    bool? removeAccountSucces,
-    bool? deactiveAccountSucces,
     bool? isButtonEnabled,
-    bool? requestSucces,
+    bool? requestOTP,
     Meta? meta,
+    ResponseMsg? responseMsg,
     BaseResponseFailure? error,
   }) {
     return OtpStateData(
@@ -56,11 +52,10 @@ class OtpStateData extends Equatable {
       isLoaded: isLoaded ?? this.isLoaded,
       otpSucces: otpSucces ?? this.otpSucces,
       otpRegisterSucces: otpRegisterSucces ?? this.otpRegisterSucces,
-      removeAccountSucces: removeAccountSucces ?? this.removeAccountSucces,
-      deactiveAccountSucces: deactiveAccountSucces ?? this.deactiveAccountSucces,
-      requestSucces: requestSucces ?? this.requestSucces,
       isButtonEnabled: isButtonEnabled ?? this.isButtonEnabled,
+      requestOTP: requestOTP ?? this.requestOTP,
       meta: meta ?? this.meta,
+      responseMsg: responseMsg ?? this.responseMsg,
       error: error ?? error,
     );
   }

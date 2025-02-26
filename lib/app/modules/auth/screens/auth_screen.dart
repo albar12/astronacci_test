@@ -37,11 +37,8 @@ class _AuthScreenState extends State<AuthScreen> {
               if (didPop) {
                 return;
               }
-              if (state.data.dataIsFound) {
-                passwordController.clear();
-              } else {
-                _backDialog(context);
-              }
+
+              _backDialog(context);
             },
             child: Scaffold(
               backgroundColor: ColorConstant.whiteColor,
@@ -78,7 +75,7 @@ class _AuthScreenState extends State<AuthScreen> {
           .portraitDown, // Juga mengunci orientasi ke potrait bawah
     ]);
     iniCubit();
-    authCubit.getLastLogin();
+    authCubit.getIsLogin();
     super.initState();
   }
 
@@ -94,141 +91,14 @@ class _AuthScreenState extends State<AuthScreen> {
   void _handleListener(BuildContext context, AuthState state) {
     var cubit = authCubit;
     if (state is AuthLoaded) {
-      if (state.data.successLogin) {
+      if (state.data.successLogin || state.data.isLogin == true) {
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-      }
-
-      if (state.data.truncateSuccess) {
-        cubit.authLogin(state.data.authDto!);
       }
     }
 
     if (state is AuthFailure) {
-      if (state.data.error!.meta.message ==
-          "Pending activation: Please verify using OTP") {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => OtpScreen(
-                  username: state.data.emailOTP ?? '',
-                  brand: AppConfig.brand,
-                  fromAuth: true,
-                  // aktivation: true,
-                ),
-          ),
-          (route) => false,
-        );
-      } else if (state.data.error!.meta.message ==
-          "Data found, but account is not active") {
-        if (state.data.isActivation) {
-          _activationDialog(context);
-        }
-      } else {
-        if (state.data.error!.meta.message == 'Data not found') {
-          snackbarError(message: 'Data tidak ditemukan', context: context);
-        } else if (state.data.error!.meta.message ==
-            'Login failed: Wrong password') {
-          snackbarError(
-            message: 'Login gagal: Password salah',
-            context: context,
-          );
-        } else if (state.data.error!.meta.message ==
-            'Pending activation: Please verify using OTP') {
-          snackbarError(
-            message: 'Aktivasi tertunda: Harap verifikasi menggunakan OTP',
-            context: context,
-          );
-        } else if (state.data.error!.meta.message ==
-                'Data found, but account is deleted' ||
-            state.data.error!.meta.message ==
-                'Data found, but account is no longer accessible') {
-          snackbarError(
-            message:
-                'Akun sudah terhapus, silahkan daftar kembali untuk mengakses BukuLoka Reader',
-            context: context,
-          );
-        } else {
-          snackbarError(
-            message: state.data.error!.meta.message,
-            context: context,
-          );
-        }
-      }
+      snackbarError(message: state.data.error!.meta.message, context: context);
     }
-  }
-
-  Future<dynamic> _activationDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Icon(
-              Icons.warning,
-              color: ColorConstant.yellowColor,
-              size: 50,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Ingin mengaktifkan akun ini kembali?',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Proses ini memastikan akun dapat digunakan kembali tanpa kehilangan data sebelumnya.',
-                  textAlign: TextAlign.center,
-                  style: FontFamilyConstant.primaryFont.copyWith(fontSize: 14),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .redColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        authCubit.accountActivation();
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            ColorConstant
-                                .blueColor, // Warna latar belakang tombol
-                      ),
-                      child: Text(
-                        'Iya',
-                        style: TextStyle(color: ColorConstant.whiteColor),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-    );
   }
 
   Future<dynamic> _backDialog(BuildContext context) async {

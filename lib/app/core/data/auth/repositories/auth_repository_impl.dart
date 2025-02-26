@@ -8,7 +8,41 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.authLocalDatasource, this.authRemoteDatasource);
 
   @override
-  Future<Either<BaseResponseFailure, Auth>> authLogin(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
+    RegisterRequestDto request,
+  ) async {
+    try {
+      var response = await authRemoteDatasource.authRegister(request);
+      return response;
+    } catch (e) {
+      customErrorLog("error catch: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTPRegister(
+    String email,
+  ) async {
+    return authRemoteDatasource.requestOTPRegister(email);
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyRegister(
+    String email,
+    String code,
+  ) async {
+    try {
+      var response = await authRemoteDatasource.verifyRegister(email, code);
+      return response;
+    } catch (e) {
+      customErrorLog("error catch: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Either<BaseResponseFailure, User>> authLogin(
     AuthRequestDto request,
   ) async {
     try {
@@ -22,18 +56,22 @@ class AuthRepositoryImpl implements AuthRepository {
               throw Exception("Error get token");
             }).token;
 
-        var name =
+        var nama =
             response.getOrElse(() {
               customErrorLog("Error get name from activation code : $response");
               throw Exception("Error get name");
-            }).name;
+            }).nama;
 
-        await authLocalDatasource.saveToken(token?.token ?? '');
-        await authLocalDatasource.saveRefreshToken(token?.refreshToken ?? '');
-        await authLocalDatasource.saveIdentifier(token?.identifier! ?? '');
+        var email =
+            response.getOrElse(() {
+              customErrorLog("Error get name from activation code : $response");
+              throw Exception("Error get name");
+            }).email;
+
+        await authLocalDatasource.saveToken(token);
         await authLocalDatasource.saveIsLogin(true);
-        await authLocalDatasource.saveLastLogin(request.username);
-        await authLocalDatasource.saveName(name ?? '');
+        await authLocalDatasource.saveName(nama);
+        await authLocalDatasource.saveEmail(email);
       }
 
       return response;
@@ -42,6 +80,14 @@ class AuthRepositoryImpl implements AuthRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<bool?> getIsLogin() async {
+    var isLogin = await authLocalDatasource.getIsLogin();
+    return isLogin;
+  }
+
+  // ######################################
 
   @override
   Future<String> getName() async {
@@ -125,19 +171,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
-    RegisterRequestDto request,
-  ) async {
-    try {
-      var response = await authRemoteDatasource.authRegister(request);
-      return response;
-    } catch (e) {
-      customErrorLog("error catch: $e");
-      rethrow;
-    }
-  }
-
-  @override
   Future<Either<BaseResponseFailure, SignUpModel>> authRegisterUpdate(
     RegisterUpdateDto request,
   ) async {
@@ -154,38 +187,6 @@ class AuthRepositoryImpl implements AuthRepository {
         request,
         token ?? '',
       );
-      return response;
-    } catch (e) {
-      customErrorLog("error catch: $e");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, Meta>> requestOTPRegister(
-    String email,
-  ) async {
-    return authRemoteDatasource.requestOTPRegister(email);
-  }
-
-  @override
-  Future<Either<BaseResponseFailure, Token>> verifyRegister(
-    String email,
-    String code,
-  ) async {
-    try {
-      var response = await authRemoteDatasource.verifyRegister(email, code);
-      if (response.isRight()) {
-        var token = response.getOrElse(() {
-          customErrorLog("Error get token from activation code : $response");
-          throw Exception("Error get token");
-        });
-
-        await authLocalDatasource.saveToken(token.token);
-        await authLocalDatasource.saveIdentifier(token.identifier ?? '');
-        await authLocalDatasource.saveRefreshToken(token.refreshToken);
-      }
-
       return response;
     } catch (e) {
       customErrorLog("error catch: $e");
@@ -259,12 +260,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<String?> getLastLogin() async {
     var lastLogin = await authLocalDatasource.getLastLogin();
     return lastLogin;
-  }
-
-  @override
-  Future<bool?> getIsLogin() async {
-    var isLogin = await authLocalDatasource.getIsLogin();
-    return isLogin;
   }
 
   @override

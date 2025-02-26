@@ -3,13 +3,31 @@ import 'package:dartz/dartz.dart';
 import '/path.dart';
 
 abstract class AuthRepository {
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
+    RegisterRequestDto request,
+  );
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTPRegister(
+    String email,
+  );
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyRegister(
+    String email,
+    String code,
+  );
+
+  Future<Either<BaseResponseFailure, User>> authLogin(AuthRequestDto request);
+
+  Future<bool?> getIsLogin();
+
+  // ####################
+
   Future<String?> getToken();
 
   Future<String?> getIdentifier();
 
   Future<String> getName();
 
-  Future<Either<BaseResponseFailure, Auth>> authLogin(AuthRequestDto request);
   Future<Either<BaseResponseFailure, void>> authLogout();
 
   Future<Either<BaseResponseFailure, ForgotPasswordModel>> authForgotPassword(
@@ -27,10 +45,6 @@ abstract class AuthRepository {
     ForgotPasswordRequestDto request,
   );
 
-  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
-    RegisterRequestDto request,
-  );
-
   Future<Either<BaseResponseFailure, SignUpModel>> authRegisterUpdate(
     RegisterUpdateDto request,
   );
@@ -39,16 +53,7 @@ abstract class AuthRepository {
     PasswordRequestDto request,
   );
 
-  Future<Either<BaseResponseFailure, Meta>> requestOTPRegister(String email);
-
-  Future<Either<BaseResponseFailure, Token>> verifyRegister(
-    String email,
-    String code,
-  );
-
   Future<String?> getLastLogin();
-
-  Future<bool?> getIsLogin();
 
   Future<String?> getRefreshToken();
 

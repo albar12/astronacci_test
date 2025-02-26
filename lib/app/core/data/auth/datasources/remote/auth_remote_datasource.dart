@@ -3,21 +3,58 @@ import 'package:dio/dio.dart';
 import '/path.dart';
 
 class AuthRemoteDatasource extends BaseDioService {
-  Future<Either<BaseResponseFailure, Auth>> authLogin(
+  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
+    RegisterRequestDto request,
+  ) async {
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
+      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
+      responseMethod: dio.post(EndpointAPIV1.register, data: request.toMap()),
+      customLog:
+          "Dari bagian auth register \n request menyeluruh : ${request.toString()}",
+    );
+  }
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> requestOTPRegister(
+    String email,
+  ) async {
+    var data = {"email": email};
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
+      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
+      responseMethod: dio.post(EndpointAPIV1.resendOTP, data: data),
+      customLog: "Dari bagian request OTP register",
+    );
+  }
+
+  Future<Either<BaseResponseFailure, ResponseMsg>> verifyRegister(
+    String email,
+    String code,
+  ) async {
+    var data = {'email': email, 'otp': code};
+    return await baseFunction<BaseResponseFailure, ResponseMsg>(
+      fromJson: (data) => ResponseMsg.fromJson(data),
+      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
+      responseMethod: dio.post(EndpointAPIV1.verifyOTP, data: data),
+      customLog:
+          "Dari bagian verify register \n request menyeluruh : ${data.toString()}",
+    );
+  }
+
+  Future<Either<BaseResponseFailure, User>> authLogin(
     AuthRequestDto request,
   ) async {
-    return await baseFunction<BaseResponseFailure, Auth>(
-      fromJson: (data) => Auth.fromJson(data),
+    return await baseFunction<BaseResponseFailure, User>(
+      fromJson: (data) => User.fromJson(data),
       fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(
-        '${EndpointAPIV1.auth}/login/${AppConfig.brand}',
-        data: request.toMap(),
-      ),
+      responseMethod: dio.post(EndpointAPIV1.login, data: request.toMap()),
       keyData: ['data'],
       customLog:
           "Dari bagian auth login \n request menyeluruh : ${request.toString()}",
     );
   }
+
+  // ####################################
 
   Future<Either<BaseResponseFailure, ForgotPasswordModel>> authForgotPassword(
     String email,
@@ -85,19 +122,6 @@ class AuthRemoteDatasource extends BaseDioService {
     );
   }
 
-  Future<Either<BaseResponseFailure, ResponseMsg>> authRegister(
-    RegisterRequestDto request,
-  ) async {
-    return await baseFunction<BaseResponseFailure, ResponseMsg>(
-      fromJson: (data) => ResponseMsg.fromJson(data),
-      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(EndpointAPIV1.register, data: request.toMap()),
-      keyData: ['message'],
-      customLog:
-          "Dari bagian auth register \n request menyeluruh : ${request.toString()}",
-    );
-  }
-
   Future<Either<BaseResponseFailure, SignUpModel>> authRegisterUpdate(
     RegisterUpdateDto request,
   ) async {
@@ -130,38 +154,6 @@ class AuthRemoteDatasource extends BaseDioService {
       keyData: ['data'],
       customLog:
           "Dari bagian create password \n request menyeluruh : ${request.toString()}",
-    );
-  }
-
-  Future<Either<BaseResponseFailure, Meta>> requestOTPRegister(
-    String email,
-  ) async {
-    return await baseFunction<BaseResponseFailure, Meta>(
-      fromJson: (data) => Meta.fromJson(data),
-      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.get(
-        '${EndpointAPIV1.auth}/otp/${AppConfig.brand}/$email',
-      ),
-      keyData: ['meta'],
-      customLog: "Dari bagian request OTP register",
-    );
-  }
-
-  Future<Either<BaseResponseFailure, Token>> verifyRegister(
-    String email,
-    String code,
-  ) async {
-    var data = {'code': code};
-    return await baseFunction<BaseResponseFailure, Token>(
-      fromJson: (data) => Token.fromJson(data),
-      fromJsonError: (data) => BaseResponseFailure.fromJson(data),
-      responseMethod: dio.post(
-        '${EndpointAPIV1.auth}/otp/${AppConfig.brand}/$email',
-        data: data,
-      ),
-      keyData: ['data'],
-      customLog:
-          "Dari bagian verify register \n request menyeluruh : ${code.toString()}",
     );
   }
 

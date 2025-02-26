@@ -73,8 +73,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         MaterialPageRoute(
           builder:
               (context) => OtpScreen(
-                username: state.data.registerRequestDto?.email ?? '',
-                brand: AppConfig.brand,
+                email: state.data.registerRequestDto?.email ?? "",
+                isRegister: true,
               ),
         ),
         (route) => true,
