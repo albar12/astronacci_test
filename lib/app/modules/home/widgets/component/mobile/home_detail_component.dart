@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/path.dart';
 
+// ignore: must_be_immutable
 class HomeDetailComponent extends StatelessWidget {
   HomeDetailComponent({
     super.key,
@@ -26,6 +27,7 @@ class HomeDetailComponent extends StatelessWidget {
             _headerInputField("Nama Lengkap"),
             const SizedBox(height: 8),
             CustomTextFormField(
+              isReadOnly: true,
               controller: controller,
               hint: user.nama,
               cursorColor: ColorConstant.greyColor15,
@@ -39,6 +41,7 @@ class HomeDetailComponent extends StatelessWidget {
             _headerInputField("Email"),
             const SizedBox(height: 8),
             CustomTextFormField(
+              isReadOnly: true,
               controller: controller,
               hint: user.email,
               cursorColor: ColorConstant.blueColor,
@@ -52,6 +55,7 @@ class HomeDetailComponent extends StatelessWidget {
             _headerInputField("No. WhatsApp"),
             const SizedBox(height: 8),
             CustomTextFormField(
+              isReadOnly: true,
               controller: controller,
               hint: user.noWhatsapp,
               cursorColor: ColorConstant.blueColor,
@@ -65,6 +69,7 @@ class HomeDetailComponent extends StatelessWidget {
             _headerInputField("Status"),
             const SizedBox(height: 8),
             CustomTextFormField(
+              isReadOnly: true,
               controller: controller,
               hint: user.isActive ? 'Aktif' : "Non-Aktif",
               cursorColor: ColorConstant.blueColor,
