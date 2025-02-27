@@ -8,12 +8,5 @@ Future<void> main() async {
 
   initDependencies();
 
-  runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('en', 'US'), Locale('id', 'ID')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('en', 'US'),
-      child: const BukulokaApp(),
-    ),
-  );
+  runApp(const App());
 }

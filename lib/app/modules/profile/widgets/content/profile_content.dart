@@ -3,158 +3,242 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/path.dart';
 
-class ProfileContent extends StatelessWidget {
+class ProfileContent extends StatefulWidget {
   const ProfileContent({
     super.key,
     required this.size,
     required this.profileState,
-    required this.version,
+    required this.namaController,
+    required this.emailController,
+    required this.phoneController,
   });
   final Size size;
   final ProfileState profileState;
-  final String version;
+  final TextEditingController namaController;
+  final TextEditingController emailController;
+  final TextEditingController phoneController;
+
+  @override
+  State<ProfileContent> createState() => _ProfileContentState();
+}
+
+class _ProfileContentState extends State<ProfileContent> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 7.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: ProfileHeaderComponent(
-                  size: size,
-                  profileState: profileState,
-                ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _headerInputField("Nama Lengkap", isMandatory: true),
+            const SizedBox(height: 8),
+            CustomTextFormField(
+              controller: widget.namaController,
+              hint: "Masukkan Nama",
+              cursorColor: ColorConstant.greyColor15,
+              keyboardType: TextInputType.text,
+              hintStyle: FontFamilyConstant.primaryFont.copyWith(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
               ),
-              _content(context, profileState),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            _headerInputField("Email"),
+            const SizedBox(height: 8),
+            CustomTextFormField(
+              isReadOnly: true,
+              controller: widget.emailController,
+              hint: "Masukkan Email",
+              cursorColor: ColorConstant.blueColor,
+              keyboardType: TextInputType.emailAddress,
+              hintStyle: FontFamilyConstant.primaryFont.copyWith(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _headerInputField("No. WhatsApp", isMandatory: true),
+            const SizedBox(height: 8),
+            CustomTextFormField(
+              controller: widget.phoneController,
+              hint: "Masukkan No. WhatsApp",
+              cursorColor: ColorConstant.blueColor,
+              keyboardType: TextInputType.phone,
+              hintStyle: FontFamilyConstant.primaryFont.copyWith(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorConstant.redColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () async {
+                        _backDialog(context, context.read<ProfileCubit>());
+                      },
+                      child: Text(
+                        "Logout",
+                        style: FontFamilyConstant.primaryFont.copyWith(
+                          color: ColorConstant.whiteColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 2,
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorConstant.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (widget.namaController.text.isEmpty ||
+                            widget.phoneController.text.isEmpty) {
+                          snackbarError(
+                            title: 'Perhatian',
+                            message: 'Mohon isi semua data wajib',
+                            context: context,
+                          );
+                        } else {
+                          _updateDialog(context, context.read<ProfileCubit>());
+                        }
+                      },
+                      child: Text(
+                        "Update",
+                        style: FontFamilyConstant.primaryFont.copyWith(
+                          color: ColorConstant.whiteColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _content(BuildContext context, ProfileState profileState) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  @override
+  void initState() {
+    super.initState();
+    widget.namaController.text = widget.profileState.data.user?.nama ?? '';
+    widget.emailController.text = widget.profileState.data.user?.email ?? '';
+    widget.phoneController.text =
+        widget.profileState.data.user?.noWhatsapp ?? '';
+  }
+
+  Widget _headerInputField(String label, {bool isMandatory = false}) {
+    return Row(
       children: [
-        SizedBox(height: size.height * 0.05),
         Text(
-          "Akun",
+          label,
           style: FontFamilyConstant.primaryFont.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            color: ColorConstant.blackColor3,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
           ),
         ),
-        SizedBox(height: size.height * 0.03),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_akun.svg",
-          title: "Akun",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ChangeProfileScreen(
-                      profileModel: profileState.data.profileModel,
-                    ),
-              ),
-              (route) => true,
-            );
-          },
-        ),
-        SizedBox(height: size.height * 0.04),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_pass_change.svg",
-          title: "Ubah Kata Sandi",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ChangePasswordScreen(),
-              ),
-              (route) => true,
-            );
-          },
-        ),
-        SizedBox(height: size.height * 0.04),
-        Text(
-          "Pusat Bantuan",
-          style: FontFamilyConstant.primaryFont.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        SizedBox(height: size.height * 0.03),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_terms_conditions.svg",
-          title: "Syarat dan Ketentuan",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {},
-        ),
-        SizedBox(height: size.height * 0.04),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_protection.svg",
-          title: "Kebijakan Privasi",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {},
-        ),
-        SizedBox(height: size.height * 0.04),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_faq.svg",
-          title: "FAQ",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {},
-        ),
-        SizedBox(height: size.height * 0.04),
-        ProfileBodyComponent(
-          size: size,
-          leadingIcon: "assets/icons/svg/ic_customer_service.svg",
-          title: "Layanan Pelanggan",
-          suffixIcon: Icon(Icons.arrow_forward_ios, size: size.width * 0.05),
-          onTap: () {
-            LauncherUrl.openAndLaunchUrl(
-              "https://api.whatsapp.com/send?phone=${AppConfig.appName}",
-            );
-          },
-        ),
-        SizedBox(height: size.height * 0.06),
-        SizedBox(
-          width: size.width,
-          height: 50,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorConstant.redColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              _backDialog(context);
-            },
-            child: Text(
-              "Keluar",
-              style: FontFamilyConstant.primaryFont.copyWith(
-                color: ColorConstant.whiteColor,
-              ),
+        if (isMandatory)
+          Text(
+            "*",
+            style: FontFamilyConstant.primaryFont.copyWith(
+              color: ColorConstant.redColor,
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
             ),
           ),
-        ),
-        SizedBox(height: size.height * 0.04),
       ],
     );
   }
 
-  Future<dynamic> _backDialog(BuildContext context) async {
+  Future<dynamic> _updateDialog(
+    BuildContext context,
+    ProfileCubit cubit,
+  ) async {
+    return showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Icon(
+              Icons.warning,
+              color: ColorConstant.yellowColor,
+              size: 50,
+            ),
+            content: const Text(
+              'Apa Anda yakin ingin update profile?',
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            ColorConstant
+                                .redColor, // Warna latar belakang tombol
+                      ),
+                      child: Text(
+                        'Batal',
+                        style: TextStyle(color: ColorConstant.whiteColor),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ChangeProfileRequestDto requestDto =
+                            ChangeProfileRequestDto(
+                              email: widget.emailController.text,
+                              nama: widget.namaController.text,
+                              phone: widget.phoneController.text,
+                            );
+                        cubit.updateProfile(requestDto);
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            ColorConstant
+                                .blueColor, // Warna latar belakang tombol
+                      ),
+                      child: Text(
+                        'Iya',
+                        style: TextStyle(color: ColorConstant.whiteColor),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<dynamic> _backDialog(BuildContext context, ProfileCubit cubit) async {
     return showDialog(
       context: context,
       builder:
@@ -191,7 +275,7 @@ class ProfileContent extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<ProfileCubit>().logout();
+                        cubit.logout();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -205,64 +289,6 @@ class ProfileContent extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            ],
-          ),
-    );
-  }
-
-  Future<dynamic> _bindingDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Hubungan Akun dengan Google?'),
-            content: const Text(
-              'Apakah Anda akan menghubungkan akun dengan google?',
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false); // Kembali tanpa konfirmasi
-                },
-                child: const Text('No'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // context.read<ProfileBloc>().add(
-                  //       ProfileBindingGoogleEvent(),
-                  //     ); // Konfirmasi untuk kembali
-                },
-                child: const Text('Yes'),
-              ),
-            ],
-          ),
-    );
-  }
-
-  Future<dynamic> _unBindingDialog(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Hapus hubungan Akun dengan Google?'),
-            content: const Text(
-              'Apakah Anda akan menghapus hubungan akun dengan google?',
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false); // Kembali tanpa konfirmasi
-                },
-                child: const Text('No'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // context.read<ProfileBloc>().add(
-                  //       ProfileUnbindingGoogleEvent(),
-                  //     ); // Konfirmasi untuk kembali
-                },
-                child: const Text('Yes'),
               ),
             ],
           ),

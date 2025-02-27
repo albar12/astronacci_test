@@ -4,43 +4,37 @@ class ProfileStateData extends Equatable {
   final bool isLoading;
   final bool isLoaded;
   final bool isLogout;
-  final bool removeSuccess;
-  final ProfileModel? profileModel;
+  final bool updateSuccess;
+  final User? user;
   final BaseResponseFailure? error;
 
   const ProfileStateData({
     this.isLoading = false,
     this.isLoaded = false,
     this.isLogout = false,
-    this.removeSuccess = false,
-    this.profileModel,
+    this.updateSuccess = false,
+    this.user,
     this.error,
   });
 
   @override
-  List<Object?> get props => [
-        isLoading,
-        isLoaded,
-        isLogout,
-        removeSuccess,
-        profileModel,
-        error,
-      ];
+  List<Object?> get props => [isLoading, isLoaded, isLogout, user, error];
 
   ProfileStateData copyWith({
     bool? isLoading,
     bool? isLoaded,
     bool? isLogout,
+    bool? updateSuccess,
     bool? removeSuccess,
-    ProfileModel? profileModel,
+    User? user,
     BaseResponseFailure? error,
   }) {
     return ProfileStateData(
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
       isLogout: isLogout ?? this.isLogout,
-      removeSuccess: removeSuccess ?? this.removeSuccess,
-      profileModel: profileModel ?? this.profileModel,
+      updateSuccess: updateSuccess ?? this.updateSuccess,
+      user: user ?? this.user,
       error: error ?? error,
     );
   }

@@ -21,49 +21,6 @@ class AppProviders {
             ),
           ),
     ),
-    BlocProvider<BottomNavbarCubit>(
-      create: (context) => BottomNavbarCubit()..changeIndex(0),
-    ),
-
-    BlocProvider<ProfileCubit>(
-      create:
-          (context) => ProfileCubit(
-            di.get<ProfileRepository>(
-              param1: di.get<ProfileRemoteDatasource>(),
-              param2: di.get<AuthLocalDatasource>(
-                param1: di.get<BaseStorage>(),
-              ),
-            ),
-            di.get<AuthRepository>(
-              param1: di.get<AuthRemoteDatasource>(),
-              param2: di.get<AuthLocalDatasource>(
-                param1: di.get<BaseStorage>(),
-              ),
-            ),
-          ),
-    ),
-    BlocProvider<ChangeProfileCubit>(
-      create:
-          (context) => ChangeProfileCubit(
-            di.get<ProfileRepository>(
-              param1: di.get<ProfileRemoteDatasource>(),
-              param2: di.get<AuthLocalDatasource>(
-                param1: di.get<BaseStorage>(),
-              ),
-            ),
-          ),
-    ),
-    BlocProvider<ChangePasswordCubit>(
-      create:
-          (context) => ChangePasswordCubit(
-            di.get<ProfileRepository>(
-              param1: di.get<ProfileRemoteDatasource>(),
-              param2: di.get<AuthLocalDatasource>(
-                param1: di.get<BaseStorage>(),
-              ),
-            ),
-          ),
-    ),
     BlocProvider<ForgotPasswordCubit>(
       create:
           (context) => ForgotPasswordCubit(
@@ -75,7 +32,6 @@ class AppProviders {
             ),
           ),
     ),
-
     BlocProvider<SignUpCubit>(
       create:
           (context) => SignUpCubit(

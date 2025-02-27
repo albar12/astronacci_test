@@ -102,8 +102,6 @@ class OtpCubit extends Cubit<OtpState> {
     );
   }
 
-  // #############################
-
   Future<void> isButtonEnabled(bool isEnable) async {
     stateData = stateData.copyWith(
       isLoaded: true,
@@ -111,81 +109,5 @@ class OtpCubit extends Cubit<OtpState> {
       isButtonEnabled: isEnable,
     );
     emit(OtpLoaded(stateData));
-  }
-
-  Future<void> requestOTPRemoveAccount(String email) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.requestOTPRemoveAccount(email);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          meta: right,
-        );
-        emit(OtpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> verifyRemoveAccount(String email, String code) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.verifyRemoveAccount(email, code);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(isLoaded: true, isLoading: false);
-        emit(OtpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> requestOTPDeactiveAccount(String email) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.requestOTPDeactiveAccount(email);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(
-          isLoaded: true,
-          isLoading: false,
-          meta: right,
-        );
-        emit(OtpLoaded(stateData));
-      },
-    );
-  }
-
-  Future<void> verifyDeactiveAccount(String email, String code) async {
-    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
-    emit(OtpLoading(stateData));
-
-    final result = await authRepository.verifyDeactiveAccount(email, code);
-    result.fold(
-      (left) {
-        stateData = stateData.copyWith(error: left);
-        emit(OtpFailure(stateData));
-      },
-      (right) {
-        stateData = stateData.copyWith(isLoaded: true, isLoading: false);
-        emit(OtpLoaded(stateData));
-      },
-    );
   }
 }

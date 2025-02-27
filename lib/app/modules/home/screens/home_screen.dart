@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 import '/path.dart';
 
@@ -28,6 +25,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey _sectionTopKey = GlobalKey();
 
   bool _isVisible = false;
+  int page = 1;
+  int perPage = 10;
+
+  void onRefresh() {
+    homeCubit.getListUsers(UsersRequestDto.empty());
+    refreshController.refreshCompleted();
+  }
+
+  void onLoading() async {
+    UsersRequestDto requestDto = UsersRequestDto(
+      page: page + 1,
+      perPage: perPage,
+    );
+    await homeCubit.loadListUsers(requestDto);
+    refreshController.loadComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +75,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           return HomeContent(
                             size: size,
                             state: state,
+                            refreshController: refreshController,
                             scrollController: _scrollController,
                             sectionKey1: _sectionKey1,
                             sectionTopKey: _sectionTopKey,
                             homeCubit: homeCubit,
+                            onRefresh: onRefresh,
+                            onLoading: onLoading,
                           );
                         },
                       ),
@@ -91,24 +107,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: IconButton(
                       color: ColorConstant.whiteColor,
                       onPressed: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
-                      icon: const Icon(Icons.sync),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  CircleAvatar(
-                    backgroundColor: ColorConstant.primaryColor,
-                    child: IconButton(
-                      color: ColorConstant.whiteColor,
-                      onPressed: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          '/profile',
-                          (route) => false,
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                icon: Align(
+                                  alignment: Alignment.topRight,
+                                  child: CircleAvatar(
+                                    backgroundColor: ColorConstant.primaryColor,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: ColorConstant.whiteColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                content: SizedBox(
+                                  width: size.width / 0.5,
+                                  height: size.height / 2.0,
+                                  child: ProfileScreen(),
+                                ),
+                              ),
                         );
                       },
                       icon: const Icon(Icons.person),
@@ -131,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           .portraitDown, // Juga mengunci orientasi ke potrait bawah
     ]);
     iniCubit();
+    homeCubit.getListUsers(UsersRequestDto.empty());
     _scrollController.addListener(_scrollListener);
     super.initState();
   }
@@ -154,7 +178,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _handleListener(BuildContext context, HomeState state) {
     var cubit = homeCubit;
 
-    if (state is HomeLoaded) {}
+    if (state is HomeLoaded) {
+      if (state.data.successGetlist) {
+        setState(() {
+          page = state.data.currentPage!;
+          perPage = state.data.perPage ?? 10;
+        });
+      }
+      if (state.data.successLoadlist) {
+        if (state.data.users!.isNotEmpty) {
+          setState(() {
+            page = state.data.currentPage!;
+            perPage = state.data.perPage ?? 10;
+          });
+        }
+      }
+    }
 
     if (state is HomeFailure) {
       snackbarError(message: state.data.error!.meta.message, context: context);
@@ -162,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _scrollListener() {
-    if (_scrollController.offset >= 200 && !_isVisible) {
+    if (_scrollController.offset >= 100 && !_isVisible) {
       setState(() {
         _isVisible = true;
       });

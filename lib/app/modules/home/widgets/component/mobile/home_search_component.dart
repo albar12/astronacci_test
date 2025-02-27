@@ -26,7 +26,7 @@ class _HomeSearchComponentState extends State<HomeSearchComponent> {
       height: 40,
       width: widget.size.width,
       decoration: BoxDecoration(
-        border: Border.all(width: 1.0, color: Colors.grey.shade300),
+        border: Border.all(width: 1.0, color: ColorConstant.primaryColor),
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Padding(
@@ -53,9 +53,23 @@ class _HomeSearchComponentState extends State<HomeSearchComponent> {
                 ),
                 onChanged: (value) {
                   var cubit = context.read<HomeCubit>();
+                  Future.delayed(Duration(milliseconds: 500));
+                  UsersRequestDto requestDto = UsersRequestDto(
+                    search: value,
+                    page: 1,
+                    perPage: widget.state.data.perPage ?? 10,
+                  );
+                  cubit.searchUsers(requestDto);
                 },
                 onFieldSubmitted: (value) {
                   var cubit = context.read<HomeCubit>();
+                  Future.delayed(Duration(milliseconds: 500));
+                  UsersRequestDto requestDto = UsersRequestDto(
+                    search: value,
+                    page: 1,
+                    perPage: widget.state.data.perPage ?? 10,
+                  );
+                  cubit.searchUsers(requestDto);
                 },
               ),
             ),

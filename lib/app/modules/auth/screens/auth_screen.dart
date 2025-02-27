@@ -75,7 +75,6 @@ class _AuthScreenState extends State<AuthScreen> {
           .portraitDown, // Juga mengunci orientasi ke potrait bawah
     ]);
     iniCubit();
-    authCubit.getIsLogin();
     super.initState();
   }
 
@@ -97,7 +96,27 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     if (state is AuthFailure) {
-      snackbarError(message: state.data.error!.meta.message, context: context);
+      // Akun belum aktif. Silakan verifikasi OTP terlebih dahulu.
+      if (state.data.error!.meta.message ==
+          "Akun belum aktif. Silakan verifikasi OTP terlebih dahulu.") {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => OtpScreen(
+                  email: emailController.text,
+                  isRegister: true,
+                  activation: true,
+                ),
+          ),
+          (route) => true,
+        );
+      } else {
+        snackbarError(
+          message: state.data.error!.meta.message,
+          context: context,
+        );
+      }
     }
   }
 

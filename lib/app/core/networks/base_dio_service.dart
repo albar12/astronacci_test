@@ -34,13 +34,6 @@ class BaseDioService {
     dio.interceptors.add(BaseDioLogger.logger);
     dio.interceptors.add(await BaseDioCacheManager.dioCacheInterceptor);
     dio.interceptors.add(BaseDioRetryInterceptor.getInterceptor(dio));
-
-    customInfoLog("init dio service");
-    var timezone = await const TimeZonLocalService().getTimeZone();
-    customInfoLog("timezone: $timezone");
-    if (timezone != null) {
-      dio.options.headers = {"X-Timezone": timezone};
-    }
   }
 
   // base function

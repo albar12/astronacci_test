@@ -41,12 +41,4 @@ class AuthCubit extends Cubit<AuthState> {
     );
     emit(AuthLoaded(stateData));
   }
-
-  // ######################
-
-  Future<void> getLastLogin() async {
-    final result = await authRepository.getLastLogin();
-    stateData = stateData.copyWith(successLogin: false);
-    emit(AuthLoaded(stateData));
-  }
 }

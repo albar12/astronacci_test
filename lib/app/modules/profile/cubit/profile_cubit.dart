@@ -9,10 +9,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   var stateData = const ProfileStateData();
   final ProfileRepository profileRepository;
   final AuthRepository authRepository;
-  ProfileCubit(
-    this.profileRepository,
-    this.authRepository,
-  ) : super(const ProfileInitial());
+  ProfileCubit(this.profileRepository, this.authRepository)
+    : super(const ProfileInitial());
 
   Future<void> getProfile() async {
     stateData = stateData.copyWith(
@@ -32,8 +30,27 @@ class ProfileCubit extends Cubit<ProfileState> {
         stateData = stateData.copyWith(
           isLoaded: true,
           isLoading: false,
-          profileModel: right,
-          removeSuccess: false,
+          user: right,
+          updateSuccess: false,
+        );
+        emit(ProfileLoaded(stateData));
+      },
+    );
+  }
+
+  Future<void> updateProfile(ChangeProfileRequestDto request) async {
+    final result = await profileRepository.updateProfile(request);
+    result.fold(
+      (left) {
+        stateData = stateData.copyWith(error: left);
+        emit(ProfileFailure(stateData));
+      },
+      (right) {
+        stateData = stateData.copyWith(
+          isLoaded: true,
+          isLoading: false,
+          user: right,
+          updateSuccess: true,
         );
         emit(ProfileLoaded(stateData));
       },
@@ -41,10 +58,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> logout() async {
-    stateData = stateData.copyWith(
-      isLoading: true,
-      isLoaded: false,
-    );
+    stateData = stateData.copyWith(isLoading: true, isLoaded: false);
     emit(ProfileLoading(stateData));
 
     final result = await authRepository.authLogout();

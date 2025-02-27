@@ -4,9 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/path.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, this.isRegister, required this.email});
+  const OtpScreen({
+    super.key,
+    this.isRegister,
+    this.activation,
+    required this.email,
+  });
 
   final bool? isRegister;
+  final bool? activation;
   final String email;
 
   @override
@@ -63,6 +69,10 @@ class _OtpScreenState extends State<OtpScreen> {
     iniCubit();
     if (widget.isRegister != true) {
       otpCubit.requestOTPForgot(widget.email);
+    }
+
+    if (widget.activation == true) {
+      otpCubit.requestOTP(widget.email);
     }
     super.initState();
   }

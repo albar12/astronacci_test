@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/path.dart';
 
@@ -7,20 +8,24 @@ class HomeContent extends StatefulWidget {
     super.key,
     required this.state,
     required this.size,
-    this.controller,
     required this.scrollController,
+    required this.refreshController,
     required this.sectionKey1,
     required this.sectionTopKey,
     required this.homeCubit,
+    this.onRefresh,
+    this.onLoading,
   });
 
   final HomeState state;
   final Size size;
-  final TabController? controller;
+  final RefreshController refreshController;
   final ScrollController scrollController;
   final GlobalKey sectionKey1;
   final GlobalKey sectionTopKey;
   final HomeCubit homeCubit;
+  final VoidCallback? onRefresh;
+  final VoidCallback? onLoading;
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -49,7 +54,13 @@ class _HomeContentState extends State<HomeContent> {
               ),
             ];
           },
-          body: HomeBooklistComponent(size: widget.size, state: widget.state),
+          body: HomelistComponent(
+            size: widget.size,
+            state: widget.state,
+            onRefresh: widget.onRefresh,
+            onLoading: widget.onLoading,
+            refreshController: widget.refreshController,
+          ),
         ),
       ),
     );
