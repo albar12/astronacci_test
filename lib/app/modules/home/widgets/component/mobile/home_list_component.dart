@@ -78,24 +78,22 @@ class HomelistComponent extends StatelessWidget {
                   user: user,
                 ),
                 actions: <Widget>[
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorConstant.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                  SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorConstant.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        onPressed: () async {
-                          Navigator.of(context).pop(false);
-                        },
-                        child: Text(
-                          "Tutup",
-                          style: FontFamilyConstant.primaryFont.copyWith(
-                            color: ColorConstant.whiteColor,
-                          ),
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(
+                        "Tutup",
+                        style: FontFamilyConstant.primaryFont.copyWith(
+                          color: ColorConstant.whiteColor,
                         ),
                       ),
                     ),
